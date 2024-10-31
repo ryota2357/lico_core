@@ -1,0 +1,173 @@
+SourceFile =
+  '$shebang'?
+  Stmt*
+
+//************//
+// Statements //
+//************//
+
+Stmt =
+  AttrStmt
+| BreakStmt
+| ContinueStmt
+| ForStmt
+| FuncStmt
+| ReturnStmt
+| VarStmt
+| WhileStmt
+| Expr
+
+AttrStmt =
+  '@' '[' command:'$ident' ']'
+
+BreakStmt =
+  'break'
+
+ContinueStmt =
+  'continue'
+
+ForStmt =
+  'for' Pat 'in' iterable:Expr
+  loop_body:DoExpr
+
+FuncStmt =
+  'func' Name ParamList
+  statements:Stmt*
+  'end'
+
+ReturnStmt =
+  'return' Expr?
+
+VarStmt =
+  'var' Pat '=' Expr
+
+WhileStmt =
+  'while' condition:Expr
+  loop_body:DoExpr
+
+//*************//
+// Expressions //
+//*************//
+
+Expr =
+  ArrayExpr
+| BinaryExpr
+| CallExpr
+| DoExpr
+| FieldExpr
+| FuncExpr
+| IfExpr
+| IndexExpr
+| Literal
+| Local
+| MethodCallExpr
+| ParenExpr
+| PrefixExpr
+| TableExpr
+
+ArrayExpr =
+  '['
+     (Expr (',' Expr)* ','?)?
+  ']'
+
+BinaryExpr =
+  lhs:Expr
+  op:(
+    '=' | 'and' | 'or'
+  | '==' | '!=' | '<=' | '>=' | '<' | '>'
+  | '+' | '*' | '-' | '/' | '%' | '<<' | '>>' | '..' | '^' | '|' | '&'
+  )
+  rhs:Expr
+
+CallExpr =
+  Expr ArgList
+ArgList =
+  '(' args:(Expr (',' Expr)* ','?)? ')'
+
+DoExpr =
+  'do' statements:Stmt* 'end'
+
+FieldExpr =
+  Expr '.' Name
+
+FuncExpr =
+  'func' ParamList
+  statements:Stmt*
+  'end'
+
+IfExpr =
+  'if' condition:Expr 'then'
+  statements:Stmt*
+  elif_branches:ElifBranch*
+  else_branche:ElseBranch?
+  'end'
+ElifBranch =
+  'elif' condition:Expr 'then'
+  statements:Stmt*
+ElseBranch =
+  'else'
+  statements:Stmt*
+
+IndexExpr =
+  Expr '[' index:Expr ']'
+
+Literal =
+  '$int'
+| '$float'
+| '$string'
+| '$true'
+| '$false'
+| '$nil'
+
+Local =
+  Name
+
+MethodCallExpr =
+  Expr '->' '$ident'
+
+ParenExpr =
+  '(' Expr ')'
+
+PrefixExpr =
+  op:('+' | '-' | '~' | 'not' | 'typeof')
+  Expr
+
+TableExpr =
+  '{'
+  fields:(TableField (',' TableField)* ','?)?
+  '}'
+TableField =
+  name:TableFieldName '=' Expr
+TableFieldName =
+  Name
+| TableFieldNameExpr
+TableFieldNameExpr =
+  '[' Expr ']'
+
+//*********//
+// Pattern //
+//*********//
+
+Pat =
+  Name
+| WildcardPat
+
+WildcardPat =
+  '_'
+
+//***********//
+// Parameter //
+//***********//
+
+ParamList =
+  '(' params:(Param (',' Param)* ','?)? ')'
+
+Param =
+  Name
+
+//******//
+// Misc //
+//******//
+
+Name =
+  '$ident'
