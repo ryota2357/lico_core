@@ -181,20 +181,59 @@ impl SyntaxKind {
 #[macro_export]
 #[doc(hidden)]
 macro_rules! __token_kind_fast_accsess {
+    (shebang) => {
+        $crate::SyntaxKind::SHEBANG
+    };
     (@) => {
         $crate::SyntaxKind::AT
     };
     ('[') => {
         $crate::SyntaxKind::OPEN_BRACKET
     };
+    (ident) => {
+        $crate::SyntaxKind::IDENT
+    };
     (']') => {
         $crate::SyntaxKind::CLOSE_BRACKET
+    };
+    (break) => {
+        $crate::SyntaxKind::BREAK_KW
+    };
+    (continue) => {
+        $crate::SyntaxKind::CONTINUE_KW
+    };
+    (for) => {
+        $crate::SyntaxKind::FOR_KW
+    };
+    (in) => {
+        $crate::SyntaxKind::IN_KW
+    };
+    (func) => {
+        $crate::SyntaxKind::FUNC_KW
+    };
+    (end) => {
+        $crate::SyntaxKind::END_KW
+    };
+    (return) => {
+        $crate::SyntaxKind::RETURN_KW
+    };
+    (var) => {
+        $crate::SyntaxKind::VAR_KW
     };
     (=) => {
         $crate::SyntaxKind::EQ
     };
+    (while) => {
+        $crate::SyntaxKind::WHILE_KW
+    };
     (,) => {
         $crate::SyntaxKind::COMMA
+    };
+    (and) => {
+        $crate::SyntaxKind::AND_KW
+    };
+    (or) => {
+        $crate::SyntaxKind::OR_KW
     };
     (==) => {
         $crate::SyntaxKind::EQ_2
@@ -253,14 +292,53 @@ macro_rules! __token_kind_fast_accsess {
     (')') => {
         $crate::SyntaxKind::CLOSE_PAREN
     };
+    (do) => {
+        $crate::SyntaxKind::DO_KW
+    };
     (.) => {
         $crate::SyntaxKind::DOT
+    };
+    (if) => {
+        $crate::SyntaxKind::IF_KW
+    };
+    (then) => {
+        $crate::SyntaxKind::THEN_KW
+    };
+    (elif) => {
+        $crate::SyntaxKind::ELIF_KW
+    };
+    (else) => {
+        $crate::SyntaxKind::ELSE_KW
+    };
+    (int) => {
+        $crate::SyntaxKind::INT
+    };
+    (float) => {
+        $crate::SyntaxKind::FLOAT
+    };
+    (string) => {
+        $crate::SyntaxKind::STRING
+    };
+    (true) => {
+        $crate::SyntaxKind::TRUE
+    };
+    (false) => {
+        $crate::SyntaxKind::FALSE
+    };
+    (nil) => {
+        $crate::SyntaxKind::NIL
     };
     (->) => {
         $crate::SyntaxKind::ARROW
     };
     (~) => {
         $crate::SyntaxKind::TILDE
+    };
+    (not) => {
+        $crate::SyntaxKind::NOT_KW
+    };
+    (typeof) => {
+        $crate::SyntaxKind::TYPEOF_KW
     };
     ('{') => {
         $crate::SyntaxKind::OPEN_BRACE

@@ -43,37 +43,36 @@ pub(crate) fn generate(sh: &Shell) -> Result<()> {
             panic!("too many syntax kinds");
         }
         let t_macro_variants = {
-            let puncts_map = grammar
+            let symbol_map = grammar
                 .tokens()
-                .filter_map(|token| {
-                    let name = &grammar[token].name;
-                    PUNCT_MAP.iter().find_map(|(p, pname)| {
-                        let to_upper_ident =
-                            |s: &str| format_ident!("{}", s.to_case(Case::UpperSnake));
-                        if p == name {
-                            if "(){}[]".contains(p) {
-                                let c = p.chars().next().unwrap();
-                                Some((quote! { #c }, to_upper_ident(pname)))
-                            } else if "_".contains(p) {
-                                let ident = format_ident!("{}", p);
-                                Some((quote! { #ident }, to_upper_ident(pname)))
-                            } else {
-                                let cs = p.chars().map(|c| Punct::new(c, Spacing::Joint));
-                                Some((quote! { #(#cs)* }, to_upper_ident(pname)))
-                            }
-                        } else {
-                            None
+                .map(|token| {
+                    let token = &grammar[token];
+                    let syntax_kind = format_ident!("{}", get_token_syntax_kind_name(token));
+                    match token.name.as_str() {
+                        punct @ ("(" | ")" | "{" | "}" | "[" | "]") => {
+                            let c = punct.chars().next().unwrap();
+                            (quote! { #c }, syntax_kind)
                         }
-                    })
+                        "_" => (quote! { _ }, syntax_kind),
+                        punct if punct.chars().all(|c| c.is_ascii_punctuation()) => {
+                            let cs = punct.chars().map(|c| Punct::new(c, Spacing::Joint));
+                            (quote! { #(#cs)* }, syntax_kind)
+                        }
+                        name => {
+                            let name = name.strip_prefix('$').unwrap_or(name);
+                            let ident = format_ident!("{}", name);
+                            (quote! { #ident }, syntax_kind)
+                        }
+                    }
                 })
                 .collect::<Box<_>>();
-            let puncts = puncts_map.iter().map(|(p, _)| p).collect::<Box<_>>();
-            let names = puncts_map.iter().map(|(_, name)| name).collect::<Box<_>>();
+            let symbols = symbol_map.iter().map(|(p, _)| p).collect::<Box<_>>();
+            let names = symbol_map.iter().map(|(_, n)| n).collect::<Box<_>>();
             quote! {
                 #[macro_export]
                 #[doc(hidden)]
                 macro_rules! __token_kind_fast_accsess {
-                    #((#puncts) => { $crate::SyntaxKind::#names });*
+                    #((#symbols) => { $crate::SyntaxKind::#names });*
                 }
                 pub use __token_kind_fast_accsess as T;
             }
