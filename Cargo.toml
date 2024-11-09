@@ -11,7 +11,10 @@ authors = ["ryota2357"]
 edition = "2021"
 
 [workspace.dependencies]
+pretty_assertions = "1.4.0"
 rowan = "0.15.16"
+unicode-ident = "1.0.12"
+unicode-properties = { version = "0.1.1", default-features = false }
 
 [package]
 name = "lico_core"
@@ -20,4 +23,5 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
+lexer = { path = "crates/lexer" }
 syntax = { path = "crates/syntax" }

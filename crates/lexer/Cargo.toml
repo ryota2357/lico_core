@@ -1,0 +1,13 @@
+[package]
+name = "lexer"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+syntax = { path = "../syntax" }
+unicode-ident = { workspace = true }
+unicode-properties = { workspace = true, features = ["emoji"] }
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }
