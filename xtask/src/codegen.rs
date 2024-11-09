@@ -31,7 +31,7 @@ fn ensure_file_contents(path: &Path, contents: &str) -> Result<()> {
     let display_path = path.strip_prefix(project_root()).unwrap_or(path);
     if let Ok(old_contents) = fs::read_to_string(path) {
         if old_contents == contents {
-            message(Level::Info, &format!("{} is up to date", display_path.display()));
+            message(Level::Info, format!("{} is up to date", display_path.display()));
             return Ok(());
         }
     }
@@ -39,7 +39,7 @@ fn ensure_file_contents(path: &Path, contents: &str) -> Result<()> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    message(Level::Warn, &format!("updating {}", display_path.display()));
+    message(Level::Warn, format!("updating {}", display_path.display()));
     fs::write(path, contents)?;
     Ok(())
 }

@@ -23,18 +23,16 @@ fn project_root() -> PathBuf {
     PathBuf::from(dir).parent().unwrap().to_owned()
 }
 
-#[allow(dead_code)]
 enum Level {
     Info,
     Warn,
-    Success,
 }
 
-fn message(level: Level, msg: &str) {
+fn message<S: AsRef<str>>(level: Level, msg: S) {
+    let msg = msg.as_ref();
     let prefix = match level {
         Level::Info => "info".blue(),
         Level::Warn => "warn".yellow(),
-        Level::Success => "success".green(),
     };
     let mut lines = msg.lines();
     println!("[{}] {}", prefix, lines.next().unwrap_or(""));
