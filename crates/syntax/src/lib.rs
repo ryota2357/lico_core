@@ -2,6 +2,7 @@ mod syntax_kind;
 pub use syntax_kind::*;
 
 pub mod ast;
+pub mod token;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum LicoLanguage {}
