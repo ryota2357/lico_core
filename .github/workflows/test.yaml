@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Format check
         run: cargo fmt --all --check
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Test
         run: cargo test --workspace
@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Test
         run: cargo test --workspace --release
