@@ -18,7 +18,7 @@ Stmt =
 | Expr
 
 AttrStmt =
-  '@' '[' command:'$ident' ']'
+  '@' ('!')? '[' command:'$ident' ']'
 
 BreakStmt =
   'break'

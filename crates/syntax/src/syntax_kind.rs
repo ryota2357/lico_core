@@ -37,6 +37,7 @@ pub enum SyntaxKind {
     AMP,
     ARROW,
     AT,
+    BANG,
     BANG_EQ,
     CARET,
     CLOSE_BRACE,
@@ -103,7 +104,7 @@ impl From<SyntaxKind> for rowan::SyntaxKind {
 }
 impl From<rowan::SyntaxKind> for SyntaxKind {
     fn from(kind: rowan::SyntaxKind) -> Self {
-        assert!(kind.0 <= (91usize as u16), "bad SyntaxKind: {:?}", kind);
+        assert!(kind.0 <= (92usize as u16), "bad SyntaxKind: {:?}", kind);
         unsafe { ::core::mem::transmute(kind.0 as u8) }
     }
 }
@@ -148,6 +149,7 @@ impl SyntaxKind {
             SyntaxKind::AMP
                 | SyntaxKind::ARROW
                 | SyntaxKind::AT
+                | SyntaxKind::BANG
                 | SyntaxKind::BANG_EQ
                 | SyntaxKind::CARET
                 | SyntaxKind::CLOSE_BRACE
@@ -186,6 +188,9 @@ macro_rules! __token_kind_fast_accsess {
     };
     (@) => {
         $crate::SyntaxKind::AT
+    };
+    (!) => {
+        $crate::SyntaxKind::BANG
     };
     ('[') => {
         $crate::SyntaxKind::OPEN_BRACKET

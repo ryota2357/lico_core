@@ -133,6 +133,9 @@ impl AttrStmt {
     pub fn at_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::AT)
     }
+    pub fn bang_token(&self) -> Option<SyntaxToken> {
+        support::token(AstNode::syntax(self), SyntaxKind::BANG)
+    }
     pub fn open_bracket_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::OPEN_BRACKET)
     }
