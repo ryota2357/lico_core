@@ -142,7 +142,7 @@ impl SyntaxKind {
                 | SyntaxKind::WHILE_KW
         )
     }
-    pub fn is_punct(self) -> bool {
+    pub fn is_punctuation(self) -> bool {
         matches!(
             self,
             SyntaxKind::AMP

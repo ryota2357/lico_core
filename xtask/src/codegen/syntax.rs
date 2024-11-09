@@ -102,7 +102,7 @@ pub(crate) fn generate(sh: &Shell) -> Result<()> {
             impl SyntaxKind {
                 pub fn is_literal(self) -> bool { matches!(self, #( SyntaxKind::#literals )|*) }
                 pub fn is_keyword(self) -> bool { matches!(self, #( SyntaxKind::#keywords )|*) }
-                pub fn is_punct(self) -> bool { matches!(self, #( SyntaxKind::#puncts )|*) }
+                pub fn is_punctuation(self) -> bool { matches!(self, #( SyntaxKind::#puncts )|*) }
             }
             #t_macro_variants
         }
