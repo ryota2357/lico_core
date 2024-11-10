@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 mod cursor;
 use std::{char, hint::unreachable_unchecked};
 
