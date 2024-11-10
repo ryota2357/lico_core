@@ -28,4 +28,4 @@ pub type SyntaxElementChildren = rowan::SyntaxElementChildren<LicoLanguage>;
 pub type Preorder = rowan::api::Preorder<LicoLanguage>;
 pub type PreorderWithTokens = rowan::api::PreorderWithTokens<LicoLanguage>;
 pub type SyntaxNodePtr = rowan::ast::SyntaxNodePtr<LicoLanguage>;
-pub use rowan::{TextLen, TextRange, TextSize};
+pub use rowan::{GreenNode, TextLen, TextRange, TextSize};
