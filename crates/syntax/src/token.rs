@@ -11,6 +11,10 @@ fn _size_check() {
     }
 }
 
+pub trait TokenStream<'src>: Iterator<Item = Token> {
+    fn source(&self) -> &'src str;
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum TokenKind {
     /// "# comment"
