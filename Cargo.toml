@@ -23,8 +23,8 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
-lexer = { path = "crates/lexer" }
-syntax = { path = "crates/syntax" }
+lexer.path  = "crates/lexer"
+syntax.path = "crates/syntax"
 
 [profile.release]
 lto = true
