@@ -1,0 +1,13 @@
+[package]
+name = "parser"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+syntax.path = "../syntax"
+rowan = { workspace = true }
+
+[dev-dependencies]
+lexer.path = "../lexer"
+parser.path = "../parser"

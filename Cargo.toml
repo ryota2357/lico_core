@@ -25,6 +25,7 @@ edition.workspace = true
 [dependencies]
 lexer.path  = "crates/lexer"
 syntax.path = "crates/syntax"
+parser.path = "crates/parser"
 
 [profile.release]
 lto = true
