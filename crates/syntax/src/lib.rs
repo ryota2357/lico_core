@@ -1,6 +1,9 @@
 mod syntax_kind;
 pub use syntax_kind::*;
 
+mod syntax_error;
+pub use syntax_error::*;
+
 pub mod ast;
 pub mod token;
 
