@@ -8,9 +8,26 @@ use is_x_char::*;
 
 use syntax::token::{TokenKind::*, *};
 
-pub fn tokenize(source: &str) -> impl Iterator<Item = Token> + '_ {
+struct TokenStreamImpl<'src, I: Iterator<Item = Token>> {
+    source: &'src str,
+    iter: I,
+}
+
+impl<I: Iterator<Item = Token>> Iterator for TokenStreamImpl<'_, I> {
+    type Item = Token;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter.next()
+    }
+}
+impl<'s, I: Iterator<Item = Token>> TokenStream<'s> for TokenStreamImpl<'s, I> {
+    fn source(&self) -> &'s str {
+        self.source
+    }
+}
+
+pub fn tokenize(source: &str) -> impl TokenStream<'_> {
     let mut cursor = Cursor::new(source);
-    core::iter::from_fn(move || advance_token(&mut cursor))
+    TokenStreamImpl { source, iter: core::iter::from_fn(move || advance_token(&mut cursor)) }
 }
 
 fn advance_token(cursor: &mut Cursor) -> Option<Token> {
