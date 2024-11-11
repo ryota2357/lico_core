@@ -291,12 +291,6 @@ macro_rules! __token_kind_fast_accsess {
     (&) => {
         $crate::SyntaxKind::AMP
     };
-    ('(') => {
-        $crate::SyntaxKind::OPEN_PAREN
-    };
-    (')') => {
-        $crate::SyntaxKind::CLOSE_PAREN
-    };
     (do) => {
         $crate::SyntaxKind::DO_KW
     };
@@ -335,6 +329,12 @@ macro_rules! __token_kind_fast_accsess {
     };
     (->) => {
         $crate::SyntaxKind::ARROW
+    };
+    ('(') => {
+        $crate::SyntaxKind::OPEN_PAREN
+    };
+    (')') => {
+        $crate::SyntaxKind::CLOSE_PAREN
     };
     (~) => {
         $crate::SyntaxKind::TILDE

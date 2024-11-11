@@ -81,8 +81,6 @@ BinaryExpr =
 
 CallExpr =
   Expr ArgList
-ArgList =
-  '(' args:(Expr (',' Expr)* ','?)? ')'
 
 DoExpr =
   'do' statements:Stmt* 'end'
@@ -123,7 +121,7 @@ Local =
   Name
 
 MethodCallExpr =
-  Expr '->' '$ident'
+  Expr '->' '$ident' ArgList
 
 ParenExpr =
   '(' Expr ')'
@@ -171,3 +169,6 @@ Param =
 
 Name =
   '$ident'
+
+ArgList =
+  '(' args:(Expr (',' Expr)* ','?)? ')'

@@ -880,6 +880,7 @@ impl MethodCallExpr {
     pub fn ident(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::IDENT)
     }
+    pub fn arg_list(&self) -> Option<ArgList> { support::child(AstNode::syntax(self)) }
 }
 
 pub struct ParenExpr(SyntaxNode);
