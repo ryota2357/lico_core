@@ -1,11 +1,10 @@
 mod cursor;
-use std::{char, hint::unreachable_unchecked};
-
 use cursor::Cursor;
 
 mod is_x_char;
 use is_x_char::*;
 
+use std::{char, hint::unreachable_unchecked};
 use syntax::token::{TokenKind::*, *};
 
 struct TokenStreamImpl<'src, I: Iterator<Item = Token>> {
