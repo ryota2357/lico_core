@@ -183,152 +183,17 @@ impl SyntaxKind {
 #[macro_export]
 #[doc(hidden)]
 macro_rules! __token_kind_fast_accsess {
-    (shebang) => {
-        $crate::SyntaxKind::SHEBANG
-    };
-    (@) => {
-        $crate::SyntaxKind::AT
-    };
     (!) => {
         $crate::SyntaxKind::BANG
-    };
-    ('[') => {
-        $crate::SyntaxKind::OPEN_BRACKET
-    };
-    (ident) => {
-        $crate::SyntaxKind::IDENT
-    };
-    (']') => {
-        $crate::SyntaxKind::CLOSE_BRACKET
-    };
-    (break) => {
-        $crate::SyntaxKind::BREAK_KW
-    };
-    (continue) => {
-        $crate::SyntaxKind::CONTINUE_KW
-    };
-    (for) => {
-        $crate::SyntaxKind::FOR_KW
-    };
-    (in) => {
-        $crate::SyntaxKind::IN_KW
-    };
-    (func) => {
-        $crate::SyntaxKind::FUNC_KW
-    };
-    (end) => {
-        $crate::SyntaxKind::END_KW
-    };
-    (return) => {
-        $crate::SyntaxKind::RETURN_KW
-    };
-    (var) => {
-        $crate::SyntaxKind::VAR_KW
-    };
-    (=) => {
-        $crate::SyntaxKind::EQ
-    };
-    (while) => {
-        $crate::SyntaxKind::WHILE_KW
-    };
-    (,) => {
-        $crate::SyntaxKind::COMMA
-    };
-    (and) => {
-        $crate::SyntaxKind::AND_KW
-    };
-    (or) => {
-        $crate::SyntaxKind::OR_KW
-    };
-    (==) => {
-        $crate::SyntaxKind::EQ_2
     };
     (!=) => {
         $crate::SyntaxKind::BANG_EQ
     };
-    (<=) => {
-        $crate::SyntaxKind::LE
-    };
-    (>=) => {
-        $crate::SyntaxKind::GE
-    };
-    (<) => {
-        $crate::SyntaxKind::LT
-    };
-    (>) => {
-        $crate::SyntaxKind::GT
-    };
-    (+) => {
-        $crate::SyntaxKind::PLUS
-    };
-    (*) => {
-        $crate::SyntaxKind::STAR
-    };
-    (-) => {
-        $crate::SyntaxKind::MINUS
-    };
-    (/) => {
-        $crate::SyntaxKind::SLASH
-    };
     (%) => {
         $crate::SyntaxKind::PERCENT
     };
-    (<<) => {
-        $crate::SyntaxKind::LT_2
-    };
-    (>>) => {
-        $crate::SyntaxKind::GT_2
-    };
-    (..) => {
-        $crate::SyntaxKind::DOT_2
-    };
-    (^) => {
-        $crate::SyntaxKind::CARET
-    };
-    (|) => {
-        $crate::SyntaxKind::PIPE
-    };
     (&) => {
         $crate::SyntaxKind::AMP
-    };
-    (do) => {
-        $crate::SyntaxKind::DO_KW
-    };
-    (.) => {
-        $crate::SyntaxKind::DOT
-    };
-    (if) => {
-        $crate::SyntaxKind::IF_KW
-    };
-    (then) => {
-        $crate::SyntaxKind::THEN_KW
-    };
-    (elif) => {
-        $crate::SyntaxKind::ELIF_KW
-    };
-    (else) => {
-        $crate::SyntaxKind::ELSE_KW
-    };
-    (int) => {
-        $crate::SyntaxKind::INT
-    };
-    (float) => {
-        $crate::SyntaxKind::FLOAT
-    };
-    (string) => {
-        $crate::SyntaxKind::STRING
-    };
-    (true) => {
-        $crate::SyntaxKind::TRUE
-    };
-    (false) => {
-        $crate::SyntaxKind::FALSE
-    };
-    (nil) => {
-        $crate::SyntaxKind::NIL
-    };
-    (->) => {
-        $crate::SyntaxKind::ARROW
     };
     ('(') => {
         $crate::SyntaxKind::OPEN_PAREN
@@ -336,14 +201,11 @@ macro_rules! __token_kind_fast_accsess {
     (')') => {
         $crate::SyntaxKind::CLOSE_PAREN
     };
-    (~) => {
-        $crate::SyntaxKind::TILDE
+    ('[') => {
+        $crate::SyntaxKind::OPEN_BRACKET
     };
-    (not) => {
-        $crate::SyntaxKind::NOT_KW
-    };
-    (typeof) => {
-        $crate::SyntaxKind::TYPEOF_KW
+    (']') => {
+        $crate::SyntaxKind::CLOSE_BRACKET
     };
     ('{') => {
         $crate::SyntaxKind::OPEN_BRACE
@@ -351,8 +213,146 @@ macro_rules! __token_kind_fast_accsess {
     ('}') => {
         $crate::SyntaxKind::CLOSE_BRACE
     };
+    (*) => {
+        $crate::SyntaxKind::STAR
+    };
+    (+) => {
+        $crate::SyntaxKind::PLUS
+    };
+    (,) => {
+        $crate::SyntaxKind::COMMA
+    };
+    (-) => {
+        $crate::SyntaxKind::MINUS
+    };
+    (->) => {
+        $crate::SyntaxKind::ARROW
+    };
+    (.) => {
+        $crate::SyntaxKind::DOT
+    };
+    (..) => {
+        $crate::SyntaxKind::DOT_2
+    };
+    (/) => {
+        $crate::SyntaxKind::SLASH
+    };
+    (<) => {
+        $crate::SyntaxKind::LT
+    };
+    (<<) => {
+        $crate::SyntaxKind::LT_2
+    };
+    (<=) => {
+        $crate::SyntaxKind::LE
+    };
+    (=) => {
+        $crate::SyntaxKind::EQ
+    };
+    (==) => {
+        $crate::SyntaxKind::EQ_2
+    };
+    (>) => {
+        $crate::SyntaxKind::GT
+    };
+    (>=) => {
+        $crate::SyntaxKind::GE
+    };
+    (>>) => {
+        $crate::SyntaxKind::GT_2
+    };
+    (@) => {
+        $crate::SyntaxKind::AT
+    };
+    (^) => {
+        $crate::SyntaxKind::CARET
+    };
     (_) => {
         $crate::SyntaxKind::UNDERSCORE
+    };
+    (and) => {
+        $crate::SyntaxKind::AND_KW
+    };
+    (break) => {
+        $crate::SyntaxKind::BREAK_KW
+    };
+    (continue) => {
+        $crate::SyntaxKind::CONTINUE_KW
+    };
+    (do) => {
+        $crate::SyntaxKind::DO_KW
+    };
+    (elif) => {
+        $crate::SyntaxKind::ELIF_KW
+    };
+    (else) => {
+        $crate::SyntaxKind::ELSE_KW
+    };
+    (end) => {
+        $crate::SyntaxKind::END_KW
+    };
+    (false) => {
+        $crate::SyntaxKind::FALSE
+    };
+    (float) => {
+        $crate::SyntaxKind::FLOAT
+    };
+    (for) => {
+        $crate::SyntaxKind::FOR_KW
+    };
+    (func) => {
+        $crate::SyntaxKind::FUNC_KW
+    };
+    (ident) => {
+        $crate::SyntaxKind::IDENT
+    };
+    (if) => {
+        $crate::SyntaxKind::IF_KW
+    };
+    (in) => {
+        $crate::SyntaxKind::IN_KW
+    };
+    (int) => {
+        $crate::SyntaxKind::INT
+    };
+    (nil) => {
+        $crate::SyntaxKind::NIL
+    };
+    (not) => {
+        $crate::SyntaxKind::NOT_KW
+    };
+    (or) => {
+        $crate::SyntaxKind::OR_KW
+    };
+    (return) => {
+        $crate::SyntaxKind::RETURN_KW
+    };
+    (shebang) => {
+        $crate::SyntaxKind::SHEBANG
+    };
+    (string) => {
+        $crate::SyntaxKind::STRING
+    };
+    (then) => {
+        $crate::SyntaxKind::THEN_KW
+    };
+    (true) => {
+        $crate::SyntaxKind::TRUE
+    };
+    (typeof) => {
+        $crate::SyntaxKind::TYPEOF_KW
+    };
+    (var) => {
+        $crate::SyntaxKind::VAR_KW
+    };
+    (while) => {
+        $crate::SyntaxKind::WHILE_KW
+    };
+    (|) => {
+        $crate::SyntaxKind::PIPE
+    };
+    (~) => {
+        $crate::SyntaxKind::TILDE
     };
 }
 pub use __token_kind_fast_accsess as T;

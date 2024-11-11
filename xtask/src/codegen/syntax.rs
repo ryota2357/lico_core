@@ -43,7 +43,7 @@ pub(crate) fn generate(sh: &Shell) -> Result<()> {
             panic!("too many syntax kinds");
         }
         let t_macro_variants = {
-            let symbol_map = grammar
+            let mut symbol_map = grammar
                 .tokens()
                 .map(|token| {
                     let token = &grammar[token];
@@ -65,7 +65,8 @@ pub(crate) fn generate(sh: &Shell) -> Result<()> {
                         }
                     }
                 })
-                .collect::<Box<_>>();
+                .collect::<Vec<_>>();
+            symbol_map.sort_unstable_by_key(|(symbol, _)| symbol.to_string());
             let symbols = symbol_map.iter().map(|(p, _)| p).collect::<Box<_>>();
             let names = symbol_map.iter().map(|(_, n)| n).collect::<Box<_>>();
             quote! {
