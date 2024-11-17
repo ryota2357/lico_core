@@ -1,0 +1,101 @@
+---
+source: crates/parser/tests/inline.rs
+snapshot_kind: text
+---
+# expr_literals
+
+## Input
+
+```
+var _ = 1
+var _ = 2.3
+var _ = "foo"
+var _ = 'bar'
+var _ = true
+var _ = false
+var _ = nil
+```
+
+## CST
+
+```
+SOURCE_FILE@0..88
+  VAR_STMT@0..9
+    VAR_KW@0..3 "var"
+    WHITESPACE@3..4 " "
+    WILDCARD_PAT@4..5
+      UNDERSCORE@4..5 "_"
+    WHITESPACE@5..6 " "
+    EQ@6..7 "="
+    WHITESPACE@7..8 " "
+    LITERAL@8..9
+      INT@8..9 "1"
+  WHITESPACE@9..10 "\n"
+  VAR_STMT@10..21
+    VAR_KW@10..13 "var"
+    WHITESPACE@13..14 " "
+    WILDCARD_PAT@14..15
+      UNDERSCORE@14..15 "_"
+    WHITESPACE@15..16 " "
+    EQ@16..17 "="
+    WHITESPACE@17..18 " "
+    LITERAL@18..21
+      FLOAT@18..21 "2.3"
+  WHITESPACE@21..22 "\n"
+  VAR_STMT@22..35
+    VAR_KW@22..25 "var"
+    WHITESPACE@25..26 " "
+    WILDCARD_PAT@26..27
+      UNDERSCORE@26..27 "_"
+    WHITESPACE@27..28 " "
+    EQ@28..29 "="
+    WHITESPACE@29..30 " "
+    LITERAL@30..35
+      STRING@30..35 "\"foo\""
+  WHITESPACE@35..36 "\n"
+  VAR_STMT@36..49
+    VAR_KW@36..39 "var"
+    WHITESPACE@39..40 " "
+    WILDCARD_PAT@40..41
+      UNDERSCORE@40..41 "_"
+    WHITESPACE@41..42 " "
+    EQ@42..43 "="
+    WHITESPACE@43..44 " "
+    LITERAL@44..49
+      STRING@44..49 "'bar'"
+  WHITESPACE@49..50 "\n"
+  VAR_STMT@50..62
+    VAR_KW@50..53 "var"
+    WHITESPACE@53..54 " "
+    WILDCARD_PAT@54..55
+      UNDERSCORE@54..55 "_"
+    WHITESPACE@55..56 " "
+    EQ@56..57 "="
+    WHITESPACE@57..58 " "
+    LITERAL@58..62
+      TRUE@58..62 "true"
+  WHITESPACE@62..63 "\n"
+  VAR_STMT@63..76
+    VAR_KW@63..66 "var"
+    WHITESPACE@66..67 " "
+    WILDCARD_PAT@67..68
+      UNDERSCORE@67..68 "_"
+    WHITESPACE@68..69 " "
+    EQ@69..70 "="
+    WHITESPACE@70..71 " "
+    LITERAL@71..76
+      FALSE@71..76 "false"
+  WHITESPACE@76..77 "\n"
+  VAR_STMT@77..88
+    VAR_KW@77..80 "var"
+    WHITESPACE@80..81 " "
+    WILDCARD_PAT@81..82
+      UNDERSCORE@81..82 "_"
+    WHITESPACE@82..83 " "
+    EQ@83..84 "="
+    WHITESPACE@84..85 " "
+    LITERAL@85..88
+      NIL@85..88 "nil"
+```
+
+vim:ft=markdown

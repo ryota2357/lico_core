@@ -1,3 +1,4 @@
+mod parser;
 mod syntax;
 
 use crate::{flags, message, project_root, Level};
@@ -9,8 +10,13 @@ impl flags::Codegen {
     pub(crate) fn run(self, sh: &Shell) -> Result<()> {
         let kind = self.kind.unwrap_or_default();
         match kind {
-            flags::CodegenKind::All => syntax::generate(sh),
+            flags::CodegenKind::All => {
+                syntax::generate(sh)?;
+                parser::generate(sh)?;
+                Ok(())
+            }
             flags::CodegenKind::Syntax => syntax::generate(sh),
+            flags::CodegenKind::Parser => parser::generate(sh),
         }
     }
 }

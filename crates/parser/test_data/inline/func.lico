@@ -1,0 +1,2 @@
+func foo() end
+func() end

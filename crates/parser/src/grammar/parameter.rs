@@ -1,5 +1,9 @@
 use super::*;
 
+// :test param_list
+// func f(a) end
+// func f(a, b) end
+// func f(a, b,) end
 pub(super) fn param_list(p: &mut Parser) {
     let m = p.start();
 

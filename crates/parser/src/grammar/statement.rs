@@ -31,6 +31,9 @@ pub(super) fn stmt(p: &mut Parser) {
     }
 }
 
+// :test attr_stmt
+// @![global_attr]
+// @[local_attr]
 fn attr_stmt(p: &mut Parser) {
     let m = p.start();
 
@@ -55,12 +58,16 @@ fn attr_stmt(p: &mut Parser) {
     m.complete(p, ATTR_STMT);
 }
 
+// :test break_stmt
+// break
 fn break_stmt(p: &mut Parser) {
     let m = p.start();
     p.bump(T![break]);
     m.complete(p, BREAK_STMT);
 }
 
+// :test continue_stmt
+// continue
 fn continue_stmt(p: &mut Parser) {
     let m = p.start();
     p.bump(T![continue]);
@@ -90,6 +97,9 @@ fn for_stmt(p: &mut Parser) {
     m.complete(p, FOR_STMT);
 }
 
+// :test func
+// func foo() end
+// func() end
 fn func_stmt(p: &mut Parser) {
     let m = p.start();
 
@@ -139,6 +149,9 @@ fn func_stmt(p: &mut Parser) {
     }
 }
 
+// :test return_stmt
+// return
+// return 1
 fn return_stmt(p: &mut Parser) {
     let m = p.start();
 
@@ -152,6 +165,8 @@ fn return_stmt(p: &mut Parser) {
     m.complete(p, RETURN_STMT);
 }
 
+// :test var_stmt
+// var x = 1
 fn var_stmt(p: &mut Parser) {
     let m = p.start();
     p.bump(T![var]);
@@ -174,6 +189,8 @@ fn var_stmt(p: &mut Parser) {
     m.complete(p, VAR_STMT);
 }
 
+// :test while_stmt
+// while true do end
 fn while_stmt(p: &mut Parser) {
     let m = p.start();
 

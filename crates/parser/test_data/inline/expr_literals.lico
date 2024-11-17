@@ -1,0 +1,7 @@
+var _ = 1
+var _ = 2.3
+var _ = "foo"
+var _ = 'bar'
+var _ = true
+var _ = false
+var _ = nil

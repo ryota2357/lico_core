@@ -1,0 +1,28 @@
+---
+source: crates/parser/tests/inline.rs
+snapshot_kind: text
+---
+# return_stmt
+
+## Input
+
+```
+return
+return 1
+```
+
+## CST
+
+```
+SOURCE_FILE@0..15
+  RETURN_STMT@0..6
+    RETURN_KW@0..6 "return"
+  WHITESPACE@6..7 "\n"
+  RETURN_STMT@7..15
+    RETURN_KW@7..13 "return"
+    WHITESPACE@13..14 " "
+    LITERAL@14..15
+      INT@14..15 "1"
+```
+
+vim:ft=markdown

@@ -1,0 +1,21 @@
+---
+source: crates/parser/tests/inline.rs
+snapshot_kind: text
+---
+# continue_stmt
+
+## Input
+
+```
+continue
+```
+
+## CST
+
+```
+SOURCE_FILE@0..8
+  CONTINUE_STMT@0..8
+    CONTINUE_KW@0..8 "continue"
+```
+
+vim:ft=markdown

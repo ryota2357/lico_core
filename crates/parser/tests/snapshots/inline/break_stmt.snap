@@ -1,0 +1,21 @@
+---
+source: crates/parser/tests/inline.rs
+snapshot_kind: text
+---
+# break_stmt
+
+## Input
+
+```
+break
+```
+
+## CST
+
+```
+SOURCE_FILE@0..5
+  BREAK_STMT@0..5
+    BREAK_KW@0..5 "break"
+```
+
+vim:ft=markdown

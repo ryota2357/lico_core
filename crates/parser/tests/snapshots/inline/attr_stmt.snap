@@ -1,0 +1,32 @@
+---
+source: crates/parser/tests/inline.rs
+snapshot_kind: text
+---
+# attr_stmt
+
+## Input
+
+```
+@![global_attr]
+@[local_attr]
+```
+
+## CST
+
+```
+SOURCE_FILE@0..29
+  ATTR_STMT@0..15
+    AT@0..1 "@"
+    BANG@1..2 "!"
+    OPEN_BRACKET@2..3 "["
+    IDENT@3..14 "global_attr"
+    CLOSE_BRACKET@14..15 "]"
+  WHITESPACE@15..16 "\n"
+  ATTR_STMT@16..29
+    AT@16..17 "@"
+    OPEN_BRACKET@17..18 "["
+    IDENT@18..28 "local_attr"
+    CLOSE_BRACKET@28..29 "]"
+```
+
+vim:ft=markdown

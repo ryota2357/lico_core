@@ -50,6 +50,7 @@ pub enum CodegenKind {
     #[default]
     All,
     Syntax,
+    Parser,
 }
 
 impl FromStr for CodegenKind {
@@ -59,6 +60,7 @@ impl FromStr for CodegenKind {
         match s {
             "all" => Ok(CodegenKind::All),
             "syntax" => Ok(CodegenKind::Syntax),
+            "parser" => Ok(CodegenKind::Parser),
             unknown => Err(format!("Unknown codegen kind: {}", unknown)),
         }
     }

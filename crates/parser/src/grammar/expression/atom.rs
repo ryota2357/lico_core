@@ -27,6 +27,14 @@ pub(super) fn atom_expr(p: &mut Parser) -> CompletedMarker {
 
 const LITERA_FIRST: TokenSet = TokenSet::new(&[INT, FLOAT, STRING, T![true], T![false], T![nil]]);
 
+// :test expr_literals
+// var _ = 1
+// var _ = 2.3
+// var _ = "foo"
+// var _ = 'bar'
+// var _ = true
+// var _ = false
+// var _ = nil
 fn literal(p: &mut Parser) -> CompletedMarker {
     assert!(p.at_ts(LITERA_FIRST));
     let m = p.start();
