@@ -819,9 +819,9 @@ impl Literal {
     pub fn kind(&self) -> Option<LiteralKind> {
         let token = self.token()?;
         let kind = match token.kind() {
-            SyntaxKind::INT => LiteralKind::Int(token),
-            SyntaxKind::FLOAT => LiteralKind::Float(token),
-            SyntaxKind::STRING => LiteralKind::String(token),
+            SyntaxKind::INT => LiteralKind::Int,
+            SyntaxKind::FLOAT => LiteralKind::Float,
+            SyntaxKind::STRING => LiteralKind::String,
             SyntaxKind::TRUE => LiteralKind::Bool(true),
             SyntaxKind::FALSE => LiteralKind::Bool(false),
             SyntaxKind::NIL => LiteralKind::Nil,
@@ -831,9 +831,9 @@ impl Literal {
     }
 }
 pub enum LiteralKind {
-    Int(SyntaxToken),
-    Float(SyntaxToken),
-    String(SyntaxToken),
+    Int,
+    Float,
+    String,
     Bool(bool),
     Nil,
 }

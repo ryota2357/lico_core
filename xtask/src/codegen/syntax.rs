@@ -502,9 +502,9 @@ fn convert_literal_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenSt
             pub fn kind(&self) -> Option<#enum_name> {
                 let token = self.token()?;
                 let kind = match token.kind() {
-                    SyntaxKind::INT    => #enum_name::Int(token),
-                    SyntaxKind::FLOAT  => #enum_name::Float(token),
-                    SyntaxKind::STRING => #enum_name::String(token),
+                    SyntaxKind::INT    => #enum_name::Int,
+                    SyntaxKind::FLOAT  => #enum_name::Float,
+                    SyntaxKind::STRING => #enum_name::String,
                     SyntaxKind::TRUE   => #enum_name::Bool(true),
                     SyntaxKind::FALSE  => #enum_name::Bool(false),
                     SyntaxKind::NIL    => #enum_name::Nil,
@@ -514,9 +514,9 @@ fn convert_literal_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenSt
             }
         }
         pub enum #enum_name {
-            Int(SyntaxToken),
-            Float(SyntaxToken),
-            String(SyntaxToken),
+            Int,
+            Float,
+            String,
             Bool(bool),
             Nil,
         }
