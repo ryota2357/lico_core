@@ -6,7 +6,7 @@ use anyhow::Result;
 use convert_case::{Case, Casing};
 use proc_macro2::{Ident, Punct, Spacing, TokenStream};
 use quote::{format_ident, quote};
-use std::{collections::HashMap, fs};
+use std::{collections::HashMap, fs, iter};
 use ungrammar::{Grammar, Node, NodeData, Rule, Token, TokenData};
 use xshell::Shell;
 
@@ -110,15 +110,15 @@ pub(crate) fn generate(sh: &Shell) -> Result<()> {
     };
 
     let ast_code = rustfmt(sh, {
-        std::iter::once(
+        iter::once(
             quote! {
                 use super::{LicoLanguage, SyntaxKind, SyntaxNode, SyntaxToken};
                 use core::fmt;
-                use rowan::ast::support;
                 pub use rowan::ast::{AstNode, AstChildren};
             }
             .to_string(),
         )
+        .chain(iter::once(SUPPORT_MODULE.trim().to_owned()))
         .chain(ast_nodes.iter().map(|(node, _)| node.to_string()))
         .collect::<Vec<_>>()
         .join("\n\n")
@@ -181,6 +181,39 @@ const PUNCT_MAP: &[(&str, &str)] = &[
     (">>", "gt2"),
     (">=", "ge"),
 ];
+
+const SUPPORT_MODULE: &str = r#"
+mod support {
+    use super::*;
+    pub use rowan::ast::support::*;
+
+    pub struct DebugSyntaxToken(pub Option<SyntaxToken>);
+    impl fmt::Debug for DebugSyntaxToken {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            match &self.0 {
+                Some(token) => fmt::Debug::fmt(token, f),
+                None => f.write_str("none")
+            }
+        }
+    }
+
+    pub struct DebugAstChildren<N: AstNode>(pub AstChildren<N>);
+    impl<N: AstNode + fmt::Debug + Clone> fmt::Debug for DebugAstChildren<N> {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            f.debug_list().entries(self.0.clone().map(|ast| DebugAstNode(Some(ast)))).finish()
+        }
+    }
+
+    pub struct DebugAstNode<N: AstNode>(pub Option<N>);
+    impl<N: AstNode + fmt::Debug + Clone> fmt::Debug for DebugAstNode<N> {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            match &self.0 {
+                Some(node) => fmt::Debug::fmt(node, f),
+                None => f.write_str("none")
+            }
+        }
+    }
+}"#;
 
 /// return (AstNode, SyntaxKind)
 fn convert_node(node: &Node, grammar: &Grammar) -> (TokenStream, Option<String>) {
@@ -252,6 +285,7 @@ fn convert_node_to_enum(node: &NodeData, grammar: &Grammar) -> TokenStream {
 
     let name = format_ident!("{}", name);
     quote! {
+        #[derive(Clone)]
         pub enum #name {
             #(#variant_names(#variant_ty_names)),*
         }
@@ -277,6 +311,13 @@ fn convert_node_to_enum(node: &NodeData, grammar: &Grammar) -> TokenStream {
         impl fmt::Display for #name {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
         }
+        impl fmt::Debug for #name {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                match self {
+                    #(Self::#variant_names(x) => fmt::Debug::fmt(x, f)),*
+                }
+            }
+        }
     }
 }
 
@@ -290,47 +331,57 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
         Rule::Seq(vec) => vec.iter().collect(),
         _ => unreachable!(),
     };
-    struct FieldTokenStreams(Vec<TokenStream>, HashMap<String, usize>);
-    impl FieldTokenStreams {
-        fn push_child(&mut self, field_name: &str, field_ty: &str) {
-            let field_name = format_ident!("{}", field_name);
+    #[derive(Default)]
+    struct TokenStreamBuildHelper {
+        field_token_stream: Vec<TokenStream>,
+        debug_token_stream: Vec<TokenStream>,
+        child_count: HashMap<String, usize>,
+    }
+    impl TokenStreamBuildHelper {
+        fn push_child(&mut self, field_name_str: &str, field_ty: &str) {
+            let field_name = format_ident!("{}", field_name_str);
             let field_ty = format_ident!("{}", field_ty);
-            self.1.entry(field_ty.to_string()).and_modify(|count| *count += 1).or_insert(0);
-            let count = self.1[&field_ty.to_string()];
-            if count == 0 {
-                self.0.push(quote! {
-                    pub fn #field_name(&self) -> Option<#field_ty> {
-                        support::child(AstNode::syntax(self))
-                    }
-                });
+            self.child_count.entry(field_ty.to_string()).and_modify(|c| *c += 1).or_insert(0);
+            let count = self.child_count[&field_ty.to_string()];
+            self.field_token_stream.push(if count == 0 {
+                quote! {
+                    pub fn #field_name(&self) -> Option<#field_ty> { support::child(AstNode::syntax(self)) }
+                }
             } else {
-                self.0.push(quote! {
-                    pub fn #field_name(&self) -> Option<#field_ty> {
-                        support::children(AstNode::syntax(self)).nth(#count)
-                    }
-                });
-            }
+                quote! {
+                    pub fn #field_name(&self) -> Option<#field_ty> { support::children(AstNode::syntax(self)).nth(#count) }
+                }
+            });
+            self.debug_token_stream.push(quote! {
+                .field(#field_name_str, &support::DebugAstNode(self.#field_name()))
+            })
         }
-        fn push_token(&mut self, field_name: &str, syntax_kind: &str) {
-            let field_name = format_ident!("{}", field_name);
-            let syntax_kind = format_ident!("{}", syntax_kind);
-            self.0.push(quote! {
+        fn push_token(&mut self, field_name_str: &str, syntax_kind_str: &str) {
+            let field_name = format_ident!("{}", field_name_str);
+            let syntax_kind = format_ident!("{}", syntax_kind_str);
+            self.field_token_stream.push(quote! {
                 pub fn #field_name(&self) -> Option<SyntaxToken> {
                     support::token(AstNode::syntax(self), SyntaxKind::#syntax_kind)
                 }
             });
+            self.debug_token_stream.push(quote! {
+                .field(#field_name_str, &support::DebugSyntaxToken(self.#field_name()))
+            })
         }
-        fn push_children(&mut self, field_name: &str, field_ty: &str) {
-            let field_name = format_ident!("{}", field_name);
+        fn push_children(&mut self, field_name_str: &str, field_ty: &str) {
+            let field_name = format_ident!("{}", field_name_str);
             let field_ty = format_ident!("{}", field_ty);
-            self.0.push(quote! {
+            self.field_token_stream.push(quote! {
                 pub fn #field_name(&self) -> AstChildren<#field_ty> {
                     support::children(AstNode::syntax(self))
                 }
             });
+            self.debug_token_stream.push(quote! {
+                .field(#field_name_str, &support::DebugAstChildren(self.#field_name()))
+            })
         }
     }
-    let mut field_token_streams = FieldTokenStreams(Vec::new(), HashMap::new());
+    let mut build_helper = TokenStreamBuildHelper::default();
     let mut extra_token_streams = Vec::new();
     for mut field in fields {
         while let Rule::Opt(next) = field {
@@ -346,23 +397,23 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
                 match rule {
                     Rule::Node(node) => {
                         let field_ty = grammar[*node].name.to_case(Case::UpperCamel);
-                        field_token_streams.push_child(&field_name, &field_ty);
+                        build_helper.push_child(&field_name, &field_ty);
                     }
                     Rule::Token(token) => {
                         let syntax_kind = get_token_syntax_kind_name(&grammar[*token]);
-                        field_token_streams.push_token(&field_name, &syntax_kind);
+                        build_helper.push_token(&field_name, &syntax_kind);
                     }
                     Rule::Rep(rule) => {
                         let Rule::Node(node) = rule as &Rule else {
                             panic!("complex rule {:?} in {}", rule, name)
                         };
                         let field_ty = grammar[*node].name.to_case(Case::UpperCamel);
-                        field_token_streams.push_children(&field_name, &field_ty);
+                        build_helper.push_children(&field_name, &field_ty);
                     }
                     Rule::Seq(seq) => match try_simp_seq_to_node_name(seq, grammar) {
                         Some(node_name) => {
                             let field_ty = node_name.to_case(Case::UpperCamel);
-                            field_token_streams.push_child(&field_name, &field_ty);
+                            build_helper.push_child(&field_name, &field_ty);
                         }
                         None => panic!("complex rule {:?} in {}", field, name),
                     },
@@ -379,7 +430,7 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
                             ("PrefixExpr", "op") => prefix_expr_op_field_and_op_enum(&tokens),
                             _ => panic!("unknown"),
                         };
-                        field_token_streams.0.push(fields);
+                        build_helper.field_token_stream.push(fields);
                         extra_token_streams.push(op_enum);
                     }
                     Rule::Labeled { .. } => panic!("complex rule {:?} in {}", rule, name),
@@ -389,7 +440,7 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
             Rule::Node(node) => {
                 let field_name = grammar[*node].name.to_case(Case::Snake);
                 let field_ty = grammar[*node].name.to_case(Case::UpperCamel);
-                field_token_streams.push_child(&field_name, &field_ty);
+                build_helper.push_child(&field_name, &field_ty);
             }
             Rule::Token(token) => {
                 let field_name = {
@@ -405,7 +456,7 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
                     }
                 };
                 let syntax_kind = get_token_syntax_kind_name(&grammar[*token]);
-                field_token_streams.push_token(&field_name, &syntax_kind);
+                build_helper.push_token(&field_name, &syntax_kind);
             }
             Rule::Rep(rule) => {
                 let Rule::Node(node) = rule as &Rule else {
@@ -413,13 +464,13 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
                 };
                 let field_name = grammar[*node].name.to_case(Case::Snake);
                 let field_ty = grammar[*node].name.to_case(Case::UpperCamel);
-                field_token_streams.push_children(&field_name, &field_ty);
+                build_helper.push_children(&field_name, &field_ty);
             }
             Rule::Seq(seq) => match try_simp_seq_to_node_name(seq, grammar) {
                 Some(node_name) => {
                     let field_name = node_name.to_case(Case::Snake);
                     let field_ty = node_name.to_case(Case::UpperCamel);
-                    field_token_streams.push_child(&field_name, &field_ty);
+                    build_helper.push_child(&field_name, &field_ty);
                 }
                 None => panic!("complex rule {:?} in {}", field, name),
             },
@@ -428,10 +479,13 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
         }
     }
 
-    let fields = field_token_streams.0;
+    let fields = build_helper.field_token_stream;
+    let debug_fields = build_helper.debug_token_stream;
     let syntax_kind = format_ident!("{}", name.to_case(Case::UpperSnake));
     let name = format_ident!("{}", name);
+    let name_str = name.to_string();
     quote! {
+        #[derive(Clone)]
         pub struct #name(SyntaxNode);
         impl AstNode for #name {
             type Language = LicoLanguage;
@@ -453,6 +507,13 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
         #(#extra_token_streams)*
         impl fmt::Display for #name {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+        }
+        impl fmt::Debug for #name {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct(#name_str)
+                    #(#debug_fields)*
+                    .finish()
+            }
         }
     }
 }
@@ -484,6 +545,7 @@ fn convert_literal_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenSt
     let enum_name = format_ident!("{}Kind", struct_name);
     let syntax_kind = format_ident!("{}", node.name.to_case(Case::UpperSnake));
     quote! {
+        #[derive(Clone)]
         pub struct #struct_name(SyntaxNode);
         impl AstNode for #struct_name {
             type Language = LicoLanguage;
@@ -527,6 +589,11 @@ fn convert_literal_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenSt
         }
         impl fmt::Display for #struct_name {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+        }
+        impl fmt::Debug for #struct_name {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("Literal").field("token", &support::DebugSyntaxToken(self.token())).finish()
+            }
         }
     }
 }

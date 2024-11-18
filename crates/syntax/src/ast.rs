@@ -3,9 +3,41 @@
 
 use super::{LicoLanguage, SyntaxKind, SyntaxNode, SyntaxToken};
 use core::fmt;
-use rowan::ast::support;
 pub use rowan::ast::{AstChildren, AstNode};
 
+mod support {
+    use super::*;
+    pub use rowan::ast::support::*;
+
+    pub struct DebugSyntaxToken(pub Option<SyntaxToken>);
+    impl fmt::Debug for DebugSyntaxToken {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            match &self.0 {
+                Some(token) => fmt::Debug::fmt(token, f),
+                None => f.write_str("none"),
+            }
+        }
+    }
+
+    pub struct DebugAstChildren<N: AstNode>(pub AstChildren<N>);
+    impl<N: AstNode + fmt::Debug + Clone> fmt::Debug for DebugAstChildren<N> {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            f.debug_list().entries(self.0.clone().map(|ast| DebugAstNode(Some(ast)))).finish()
+        }
+    }
+
+    pub struct DebugAstNode<N: AstNode>(pub Option<N>);
+    impl<N: AstNode + fmt::Debug + Clone> fmt::Debug for DebugAstNode<N> {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            match &self.0 {
+                Some(node) => fmt::Debug::fmt(node, f),
+                None => f.write_str("none"),
+            }
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct SourceFile(SyntaxNode);
 impl AstNode for SourceFile {
     type Language = LicoLanguage;
@@ -30,7 +62,16 @@ impl SourceFile {
 impl fmt::Display for SourceFile {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for SourceFile {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("SourceFile")
+            .field("shebang", &support::DebugSyntaxToken(self.shebang()))
+            .field("stmt", &support::DebugAstChildren(self.stmt()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub enum Stmt {
     Attr(AttrStmt),
     Break(BreakStmt),
@@ -120,7 +161,23 @@ impl AstNode for Stmt {
 impl fmt::Display for Stmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for Stmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Attr(x) => fmt::Debug::fmt(x, f),
+            Self::Break(x) => fmt::Debug::fmt(x, f),
+            Self::Continue(x) => fmt::Debug::fmt(x, f),
+            Self::For(x) => fmt::Debug::fmt(x, f),
+            Self::Func(x) => fmt::Debug::fmt(x, f),
+            Self::Return(x) => fmt::Debug::fmt(x, f),
+            Self::Var(x) => fmt::Debug::fmt(x, f),
+            Self::While(x) => fmt::Debug::fmt(x, f),
+            Self::Expr(x) => fmt::Debug::fmt(x, f),
+        }
+    }
+}
 
+#[derive(Clone)]
 pub struct AttrStmt(SyntaxNode);
 impl AstNode for AttrStmt {
     type Language = LicoLanguage;
@@ -156,7 +213,19 @@ impl AttrStmt {
 impl fmt::Display for AttrStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for AttrStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("AttrStmt")
+            .field("at_token", &support::DebugSyntaxToken(self.at_token()))
+            .field("bang_token", &support::DebugSyntaxToken(self.bang_token()))
+            .field("open_bracket_token", &support::DebugSyntaxToken(self.open_bracket_token()))
+            .field("command", &support::DebugSyntaxToken(self.command()))
+            .field("close_bracket_token", &support::DebugSyntaxToken(self.close_bracket_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct BreakStmt(SyntaxNode);
 impl AstNode for BreakStmt {
     type Language = LicoLanguage;
@@ -180,7 +249,15 @@ impl BreakStmt {
 impl fmt::Display for BreakStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for BreakStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("BreakStmt")
+            .field("break_token", &support::DebugSyntaxToken(self.break_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ContinueStmt(SyntaxNode);
 impl AstNode for ContinueStmt {
     type Language = LicoLanguage;
@@ -204,7 +281,15 @@ impl ContinueStmt {
 impl fmt::Display for ContinueStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ContinueStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ContinueStmt")
+            .field("continue_token", &support::DebugSyntaxToken(self.continue_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ForStmt(SyntaxNode);
 impl AstNode for ForStmt {
     type Language = LicoLanguage;
@@ -234,7 +319,19 @@ impl ForStmt {
 impl fmt::Display for ForStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ForStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ForStmt")
+            .field("for_token", &support::DebugSyntaxToken(self.for_token()))
+            .field("pat", &support::DebugAstNode(self.pat()))
+            .field("in_token", &support::DebugSyntaxToken(self.in_token()))
+            .field("iterable", &support::DebugAstNode(self.iterable()))
+            .field("loop_body", &support::DebugAstNode(self.loop_body()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct FuncStmt(SyntaxNode);
 impl AstNode for FuncStmt {
     type Language = LicoLanguage;
@@ -264,7 +361,19 @@ impl FuncStmt {
 impl fmt::Display for FuncStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for FuncStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("FuncStmt")
+            .field("func_token", &support::DebugSyntaxToken(self.func_token()))
+            .field("name", &support::DebugAstNode(self.name()))
+            .field("param_list", &support::DebugAstNode(self.param_list()))
+            .field("statements", &support::DebugAstChildren(self.statements()))
+            .field("end_token", &support::DebugSyntaxToken(self.end_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ReturnStmt(SyntaxNode);
 impl AstNode for ReturnStmt {
     type Language = LicoLanguage;
@@ -289,7 +398,16 @@ impl ReturnStmt {
 impl fmt::Display for ReturnStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ReturnStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ReturnStmt")
+            .field("return_token", &support::DebugSyntaxToken(self.return_token()))
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct VarStmt(SyntaxNode);
 impl AstNode for VarStmt {
     type Language = LicoLanguage;
@@ -318,7 +436,18 @@ impl VarStmt {
 impl fmt::Display for VarStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for VarStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("VarStmt")
+            .field("var_token", &support::DebugSyntaxToken(self.var_token()))
+            .field("pat", &support::DebugAstNode(self.pat()))
+            .field("eq_token", &support::DebugSyntaxToken(self.eq_token()))
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct WhileStmt(SyntaxNode);
 impl AstNode for WhileStmt {
     type Language = LicoLanguage;
@@ -344,7 +473,17 @@ impl WhileStmt {
 impl fmt::Display for WhileStmt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for WhileStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("WhileStmt")
+            .field("while_token", &support::DebugSyntaxToken(self.while_token()))
+            .field("condition", &support::DebugAstNode(self.condition()))
+            .field("loop_body", &support::DebugAstNode(self.loop_body()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub enum Expr {
     Array(ArrayExpr),
     Binary(BinaryExpr),
@@ -474,7 +613,28 @@ impl AstNode for Expr {
 impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Array(x) => fmt::Debug::fmt(x, f),
+            Self::Binary(x) => fmt::Debug::fmt(x, f),
+            Self::Call(x) => fmt::Debug::fmt(x, f),
+            Self::Do(x) => fmt::Debug::fmt(x, f),
+            Self::Field(x) => fmt::Debug::fmt(x, f),
+            Self::Func(x) => fmt::Debug::fmt(x, f),
+            Self::If(x) => fmt::Debug::fmt(x, f),
+            Self::Index(x) => fmt::Debug::fmt(x, f),
+            Self::Literal(x) => fmt::Debug::fmt(x, f),
+            Self::Local(x) => fmt::Debug::fmt(x, f),
+            Self::MethodCall(x) => fmt::Debug::fmt(x, f),
+            Self::Paren(x) => fmt::Debug::fmt(x, f),
+            Self::Prefix(x) => fmt::Debug::fmt(x, f),
+            Self::Table(x) => fmt::Debug::fmt(x, f),
+        }
+    }
+}
 
+#[derive(Clone)]
 pub enum Pat {
     Name(Name),
     Wildcard(WildcardPat),
@@ -507,7 +667,16 @@ impl AstNode for Pat {
 impl fmt::Display for Pat {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for Pat {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Name(x) => fmt::Debug::fmt(x, f),
+            Self::Wildcard(x) => fmt::Debug::fmt(x, f),
+        }
+    }
+}
 
+#[derive(Clone)]
 pub struct DoExpr(SyntaxNode);
 impl AstNode for DoExpr {
     type Language = LicoLanguage;
@@ -535,7 +704,17 @@ impl DoExpr {
 impl fmt::Display for DoExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for DoExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("DoExpr")
+            .field("do_token", &support::DebugSyntaxToken(self.do_token()))
+            .field("statements", &support::DebugAstChildren(self.statements()))
+            .field("end_token", &support::DebugSyntaxToken(self.end_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct Name(SyntaxNode);
 impl AstNode for Name {
     type Language = LicoLanguage;
@@ -559,7 +738,13 @@ impl Name {
 impl fmt::Display for Name {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for Name {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("Name").field("ident", &support::DebugSyntaxToken(self.ident())).finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ParamList(SyntaxNode);
 impl AstNode for ParamList {
     type Language = LicoLanguage;
@@ -587,7 +772,17 @@ impl ParamList {
 impl fmt::Display for ParamList {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ParamList {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ParamList")
+            .field("open_paren_token", &support::DebugSyntaxToken(self.open_paren_token()))
+            .field("params", &support::DebugAstNode(self.params()))
+            .field("close_paren_token", &support::DebugSyntaxToken(self.close_paren_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ArrayExpr(SyntaxNode);
 impl AstNode for ArrayExpr {
     type Language = LicoLanguage;
@@ -615,7 +810,17 @@ impl ArrayExpr {
 impl fmt::Display for ArrayExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ArrayExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ArrayExpr")
+            .field("open_bracket_token", &support::DebugSyntaxToken(self.open_bracket_token()))
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("close_bracket_token", &support::DebugSyntaxToken(self.close_bracket_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct BinaryExpr(SyntaxNode);
 impl AstNode for BinaryExpr {
     type Language = LicoLanguage;
@@ -717,7 +922,16 @@ impl BinaryOp {
 impl fmt::Display for BinaryExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for BinaryExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("BinaryExpr")
+            .field("lhs", &support::DebugAstNode(self.lhs()))
+            .field("rhs", &support::DebugAstNode(self.rhs()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct CallExpr(SyntaxNode);
 impl AstNode for CallExpr {
     type Language = LicoLanguage;
@@ -740,7 +954,16 @@ impl CallExpr {
 impl fmt::Display for CallExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for CallExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("CallExpr")
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("arg_list", &support::DebugAstNode(self.arg_list()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct FieldExpr(SyntaxNode);
 impl AstNode for FieldExpr {
     type Language = LicoLanguage;
@@ -766,7 +989,17 @@ impl FieldExpr {
 impl fmt::Display for FieldExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for FieldExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("FieldExpr")
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("dot_token", &support::DebugSyntaxToken(self.dot_token()))
+            .field("name", &support::DebugAstNode(self.name()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct FuncExpr(SyntaxNode);
 impl AstNode for FuncExpr {
     type Language = LicoLanguage;
@@ -795,7 +1028,18 @@ impl FuncExpr {
 impl fmt::Display for FuncExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for FuncExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("FuncExpr")
+            .field("func_token", &support::DebugSyntaxToken(self.func_token()))
+            .field("param_list", &support::DebugAstNode(self.param_list()))
+            .field("statements", &support::DebugAstChildren(self.statements()))
+            .field("end_token", &support::DebugSyntaxToken(self.end_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct IfExpr(SyntaxNode);
 impl AstNode for IfExpr {
     type Language = LicoLanguage;
@@ -831,7 +1075,21 @@ impl IfExpr {
 impl fmt::Display for IfExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for IfExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("IfExpr")
+            .field("if_token", &support::DebugSyntaxToken(self.if_token()))
+            .field("condition", &support::DebugAstNode(self.condition()))
+            .field("then_token", &support::DebugSyntaxToken(self.then_token()))
+            .field("statements", &support::DebugAstChildren(self.statements()))
+            .field("elif_branches", &support::DebugAstChildren(self.elif_branches()))
+            .field("else_branche", &support::DebugAstNode(self.else_branche()))
+            .field("end_token", &support::DebugSyntaxToken(self.end_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct IndexExpr(SyntaxNode);
 impl AstNode for IndexExpr {
     type Language = LicoLanguage;
@@ -860,7 +1118,18 @@ impl IndexExpr {
 impl fmt::Display for IndexExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for IndexExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("IndexExpr")
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("open_bracket_token", &support::DebugSyntaxToken(self.open_bracket_token()))
+            .field("index", &support::DebugAstNode(self.index()))
+            .field("close_bracket_token", &support::DebugSyntaxToken(self.close_bracket_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct Literal(SyntaxNode);
 impl AstNode for Literal {
     type Language = LicoLanguage;
@@ -907,7 +1176,13 @@ pub enum LiteralKind {
 impl fmt::Display for Literal {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for Literal {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("Literal").field("token", &support::DebugSyntaxToken(self.token())).finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct Local(SyntaxNode);
 impl AstNode for Local {
     type Language = LicoLanguage;
@@ -929,7 +1204,13 @@ impl Local {
 impl fmt::Display for Local {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for Local {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("Local").field("name", &support::DebugAstNode(self.name())).finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct MethodCallExpr(SyntaxNode);
 impl AstNode for MethodCallExpr {
     type Language = LicoLanguage;
@@ -958,7 +1239,18 @@ impl MethodCallExpr {
 impl fmt::Display for MethodCallExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for MethodCallExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("MethodCallExpr")
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("arrow_token", &support::DebugSyntaxToken(self.arrow_token()))
+            .field("ident", &support::DebugSyntaxToken(self.ident()))
+            .field("arg_list", &support::DebugAstNode(self.arg_list()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ParenExpr(SyntaxNode);
 impl AstNode for ParenExpr {
     type Language = LicoLanguage;
@@ -986,7 +1278,17 @@ impl ParenExpr {
 impl fmt::Display for ParenExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ParenExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ParenExpr")
+            .field("open_paren_token", &support::DebugSyntaxToken(self.open_paren_token()))
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("close_paren_token", &support::DebugSyntaxToken(self.close_paren_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct PrefixExpr(SyntaxNode);
 impl AstNode for PrefixExpr {
     type Language = LicoLanguage;
@@ -1042,7 +1344,13 @@ impl PrefixOp {
 impl fmt::Display for PrefixExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for PrefixExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("PrefixExpr").field("expr", &support::DebugAstNode(self.expr())).finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct TableExpr(SyntaxNode);
 impl AstNode for TableExpr {
     type Language = LicoLanguage;
@@ -1070,7 +1378,17 @@ impl TableExpr {
 impl fmt::Display for TableExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for TableExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("TableExpr")
+            .field("open_brace_token", &support::DebugSyntaxToken(self.open_brace_token()))
+            .field("fields", &support::DebugAstNode(self.fields()))
+            .field("close_brace_token", &support::DebugSyntaxToken(self.close_brace_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ArgList(SyntaxNode);
 impl AstNode for ArgList {
     type Language = LicoLanguage;
@@ -1098,7 +1416,17 @@ impl ArgList {
 impl fmt::Display for ArgList {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ArgList {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ArgList")
+            .field("open_paren_token", &support::DebugSyntaxToken(self.open_paren_token()))
+            .field("args", &support::DebugAstNode(self.args()))
+            .field("close_paren_token", &support::DebugSyntaxToken(self.close_paren_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ElifBranch(SyntaxNode);
 impl AstNode for ElifBranch {
     type Language = LicoLanguage;
@@ -1127,7 +1455,18 @@ impl ElifBranch {
 impl fmt::Display for ElifBranch {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ElifBranch {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ElifBranch")
+            .field("elif_token", &support::DebugSyntaxToken(self.elif_token()))
+            .field("condition", &support::DebugAstNode(self.condition()))
+            .field("then_token", &support::DebugSyntaxToken(self.then_token()))
+            .field("statements", &support::DebugAstChildren(self.statements()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct ElseBranch(SyntaxNode);
 impl AstNode for ElseBranch {
     type Language = LicoLanguage;
@@ -1152,7 +1491,16 @@ impl ElseBranch {
 impl fmt::Display for ElseBranch {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for ElseBranch {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ElseBranch")
+            .field("else_token", &support::DebugSyntaxToken(self.else_token()))
+            .field("statements", &support::DebugAstChildren(self.statements()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct TableField(SyntaxNode);
 impl AstNode for TableField {
     type Language = LicoLanguage;
@@ -1178,7 +1526,17 @@ impl TableField {
 impl fmt::Display for TableField {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for TableField {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("TableField")
+            .field("name", &support::DebugAstNode(self.name()))
+            .field("eq_token", &support::DebugSyntaxToken(self.eq_token()))
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub enum TableFieldName {
     Name(Name),
     TableFieldNameExpr(TableFieldNameExpr),
@@ -1211,7 +1569,16 @@ impl AstNode for TableFieldName {
 impl fmt::Display for TableFieldName {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for TableFieldName {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Name(x) => fmt::Debug::fmt(x, f),
+            Self::TableFieldNameExpr(x) => fmt::Debug::fmt(x, f),
+        }
+    }
+}
 
+#[derive(Clone)]
 pub struct TableFieldNameExpr(SyntaxNode);
 impl AstNode for TableFieldNameExpr {
     type Language = LicoLanguage;
@@ -1239,7 +1606,17 @@ impl TableFieldNameExpr {
 impl fmt::Display for TableFieldNameExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for TableFieldNameExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("TableFieldNameExpr")
+            .field("open_bracket_token", &support::DebugSyntaxToken(self.open_bracket_token()))
+            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("close_bracket_token", &support::DebugSyntaxToken(self.close_bracket_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct WildcardPat(SyntaxNode);
 impl AstNode for WildcardPat {
     type Language = LicoLanguage;
@@ -1263,7 +1640,15 @@ impl WildcardPat {
 impl fmt::Display for WildcardPat {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
+impl fmt::Debug for WildcardPat {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("WildcardPat")
+            .field("underscore_token", &support::DebugSyntaxToken(self.underscore_token()))
+            .finish()
+    }
+}
 
+#[derive(Clone)]
 pub struct Param(SyntaxNode);
 impl AstNode for Param {
     type Language = LicoLanguage;
@@ -1284,4 +1669,9 @@ impl Param {
 }
 impl fmt::Display for Param {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
+impl fmt::Debug for Param {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("Param").field("name", &support::DebugAstNode(self.name())).finish()
+    }
 }
