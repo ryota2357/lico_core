@@ -113,8 +113,9 @@ pub(crate) fn generate(sh: &Shell) -> Result<()> {
         std::iter::once(
             quote! {
                 use super::{LicoLanguage, SyntaxKind, SyntaxNode, SyntaxToken};
-                pub use rowan::ast::{AstNode, AstChildren};
+                use core::fmt;
                 use rowan::ast::support;
+                pub use rowan::ast::{AstNode, AstChildren};
             }
             .to_string(),
         )
@@ -261,12 +262,10 @@ fn convert_node_to_enum(node: &NodeData, grammar: &Grammar) -> TokenStream {
             }
             fn cast(node: rowan::SyntaxNode<Self::Language>) -> Option<Self> {
                 let kind = node.kind();
-                #(
-                    if <#variant_ty_names as AstNode>::can_cast(kind) {
-                        let casted = <#variant_ty_names as AstNode>::cast(node).expect("Invalid `can_cast` implementation");
-                        return Some(Self::#variant_names(casted));
-                    }
-                )*
+                #(if <#variant_ty_names as AstNode>::can_cast(kind) {
+                    let casted = <#variant_ty_names as AstNode>::cast(node).expect("Invalid `can_cast` implementation");
+                    return Some(Self::#variant_names(casted));
+                })*
                 None
             }
             fn syntax(&self) -> &rowan::SyntaxNode<Self::Language> {
