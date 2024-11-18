@@ -2,6 +2,7 @@
 #![cfg_attr(rustfmt, rustfmt::skip)]
 
 use super::{LicoLanguage, SyntaxKind, SyntaxNode, SyntaxToken};
+use core::fmt;
 use rowan::ast::support;
 pub use rowan::ast::{AstChildren, AstNode};
 
@@ -25,6 +26,9 @@ impl SourceFile {
         support::token(AstNode::syntax(self), SyntaxKind::SHEBANG)
     }
     pub fn stmt(&self) -> AstChildren<Stmt> { support::children(AstNode::syntax(self)) }
+}
+impl fmt::Display for SourceFile {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub enum Stmt {
@@ -113,6 +117,9 @@ impl AstNode for Stmt {
         }
     }
 }
+impl fmt::Display for Stmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct AttrStmt(SyntaxNode);
 impl AstNode for AttrStmt {
@@ -146,6 +153,9 @@ impl AttrStmt {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACKET)
     }
 }
+impl fmt::Display for AttrStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct BreakStmt(SyntaxNode);
 impl AstNode for BreakStmt {
@@ -167,6 +177,9 @@ impl BreakStmt {
         support::token(AstNode::syntax(self), SyntaxKind::BREAK_KW)
     }
 }
+impl fmt::Display for BreakStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct ContinueStmt(SyntaxNode);
 impl AstNode for ContinueStmt {
@@ -187,6 +200,9 @@ impl ContinueStmt {
     pub fn continue_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CONTINUE_KW)
     }
+}
+impl fmt::Display for ContinueStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct ForStmt(SyntaxNode);
@@ -215,6 +231,9 @@ impl ForStmt {
     pub fn iterable(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
     pub fn loop_body(&self) -> Option<DoExpr> { support::child(AstNode::syntax(self)) }
 }
+impl fmt::Display for ForStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct FuncStmt(SyntaxNode);
 impl AstNode for FuncStmt {
@@ -242,6 +261,9 @@ impl FuncStmt {
         support::token(AstNode::syntax(self), SyntaxKind::END_KW)
     }
 }
+impl fmt::Display for FuncStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct ReturnStmt(SyntaxNode);
 impl AstNode for ReturnStmt {
@@ -263,6 +285,9 @@ impl ReturnStmt {
         support::token(AstNode::syntax(self), SyntaxKind::RETURN_KW)
     }
     pub fn expr(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
+}
+impl fmt::Display for ReturnStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct VarStmt(SyntaxNode);
@@ -290,6 +315,9 @@ impl VarStmt {
     }
     pub fn expr(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
 }
+impl fmt::Display for VarStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct WhileStmt(SyntaxNode);
 impl AstNode for WhileStmt {
@@ -312,6 +340,9 @@ impl WhileStmt {
     }
     pub fn condition(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
     pub fn loop_body(&self) -> Option<DoExpr> { support::child(AstNode::syntax(self)) }
+}
+impl fmt::Display for WhileStmt {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub enum Expr {
@@ -440,6 +471,9 @@ impl AstNode for Expr {
         }
     }
 }
+impl fmt::Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub enum Pat {
     Name(Name),
@@ -470,6 +504,9 @@ impl AstNode for Pat {
         }
     }
 }
+impl fmt::Display for Pat {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct DoExpr(SyntaxNode);
 impl AstNode for DoExpr {
@@ -495,6 +532,9 @@ impl DoExpr {
         support::token(AstNode::syntax(self), SyntaxKind::END_KW)
     }
 }
+impl fmt::Display for DoExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct Name(SyntaxNode);
 impl AstNode for Name {
@@ -515,6 +555,9 @@ impl Name {
     pub fn ident(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::IDENT)
     }
+}
+impl fmt::Display for Name {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct ParamList(SyntaxNode);
@@ -541,6 +584,9 @@ impl ParamList {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_PAREN)
     }
 }
+impl fmt::Display for ParamList {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct ArrayExpr(SyntaxNode);
 impl AstNode for ArrayExpr {
@@ -565,6 +611,9 @@ impl ArrayExpr {
     pub fn close_bracket_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACKET)
     }
+}
+impl fmt::Display for ArrayExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct BinaryExpr(SyntaxNode);
@@ -665,6 +714,9 @@ impl BinaryOp {
         }
     }
 }
+impl fmt::Display for BinaryExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct CallExpr(SyntaxNode);
 impl AstNode for CallExpr {
@@ -684,6 +736,9 @@ impl AstNode for CallExpr {
 impl CallExpr {
     pub fn expr(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
     pub fn arg_list(&self) -> Option<ArgList> { support::child(AstNode::syntax(self)) }
+}
+impl fmt::Display for CallExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct FieldExpr(SyntaxNode);
@@ -707,6 +762,9 @@ impl FieldExpr {
         support::token(AstNode::syntax(self), SyntaxKind::DOT)
     }
     pub fn name(&self) -> Option<Name> { support::child(AstNode::syntax(self)) }
+}
+impl fmt::Display for FieldExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct FuncExpr(SyntaxNode);
@@ -733,6 +791,9 @@ impl FuncExpr {
     pub fn end_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::END_KW)
     }
+}
+impl fmt::Display for FuncExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct IfExpr(SyntaxNode);
@@ -767,6 +828,9 @@ impl IfExpr {
         support::token(AstNode::syntax(self), SyntaxKind::END_KW)
     }
 }
+impl fmt::Display for IfExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct IndexExpr(SyntaxNode);
 impl AstNode for IndexExpr {
@@ -792,6 +856,9 @@ impl IndexExpr {
     pub fn close_bracket_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACKET)
     }
+}
+impl fmt::Display for IndexExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct Literal(SyntaxNode);
@@ -837,6 +904,9 @@ pub enum LiteralKind {
     Bool(bool),
     Nil,
 }
+impl fmt::Display for Literal {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct Local(SyntaxNode);
 impl AstNode for Local {
@@ -855,6 +925,9 @@ impl AstNode for Local {
 }
 impl Local {
     pub fn name(&self) -> Option<Name> { support::child(AstNode::syntax(self)) }
+}
+impl fmt::Display for Local {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct MethodCallExpr(SyntaxNode);
@@ -882,6 +955,9 @@ impl MethodCallExpr {
     }
     pub fn arg_list(&self) -> Option<ArgList> { support::child(AstNode::syntax(self)) }
 }
+impl fmt::Display for MethodCallExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct ParenExpr(SyntaxNode);
 impl AstNode for ParenExpr {
@@ -906,6 +982,9 @@ impl ParenExpr {
     pub fn close_paren_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_PAREN)
     }
+}
+impl fmt::Display for ParenExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct PrefixExpr(SyntaxNode);
@@ -960,6 +1039,9 @@ impl PrefixOp {
         }
     }
 }
+impl fmt::Display for PrefixExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct TableExpr(SyntaxNode);
 impl AstNode for TableExpr {
@@ -985,6 +1067,9 @@ impl TableExpr {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACE)
     }
 }
+impl fmt::Display for TableExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct ArgList(SyntaxNode);
 impl AstNode for ArgList {
@@ -1009,6 +1094,9 @@ impl ArgList {
     pub fn close_paren_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_PAREN)
     }
+}
+impl fmt::Display for ArgList {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct ElifBranch(SyntaxNode);
@@ -1036,6 +1124,9 @@ impl ElifBranch {
     }
     pub fn statements(&self) -> AstChildren<Stmt> { support::children(AstNode::syntax(self)) }
 }
+impl fmt::Display for ElifBranch {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct ElseBranch(SyntaxNode);
 impl AstNode for ElseBranch {
@@ -1057,6 +1148,9 @@ impl ElseBranch {
         support::token(AstNode::syntax(self), SyntaxKind::ELSE_KW)
     }
     pub fn statements(&self) -> AstChildren<Stmt> { support::children(AstNode::syntax(self)) }
+}
+impl fmt::Display for ElseBranch {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub struct TableField(SyntaxNode);
@@ -1080,6 +1174,9 @@ impl TableField {
         support::token(AstNode::syntax(self), SyntaxKind::EQ)
     }
     pub fn expr(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
+}
+impl fmt::Display for TableField {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }
 
 pub enum TableFieldName {
@@ -1111,6 +1208,9 @@ impl AstNode for TableFieldName {
         }
     }
 }
+impl fmt::Display for TableFieldName {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct TableFieldNameExpr(SyntaxNode);
 impl AstNode for TableFieldNameExpr {
@@ -1136,6 +1236,9 @@ impl TableFieldNameExpr {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACKET)
     }
 }
+impl fmt::Display for TableFieldNameExpr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct WildcardPat(SyntaxNode);
 impl AstNode for WildcardPat {
@@ -1157,6 +1260,9 @@ impl WildcardPat {
         support::token(AstNode::syntax(self), SyntaxKind::UNDERSCORE)
     }
 }
+impl fmt::Display for WildcardPat {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+}
 
 pub struct Param(SyntaxNode);
 impl AstNode for Param {
@@ -1175,4 +1281,7 @@ impl AstNode for Param {
 }
 impl Param {
     pub fn name(&self) -> Option<Name> { support::child(AstNode::syntax(self)) }
+}
+impl fmt::Display for Param {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
 }

@@ -275,6 +275,9 @@ fn convert_node_to_enum(node: &NodeData, grammar: &Grammar) -> TokenStream {
                 }
             }
         }
+        impl fmt::Display for #name {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+        }
     }
 }
 
@@ -449,6 +452,9 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
             #(#fields)*
         }
         #(#extra_token_streams)*
+        impl fmt::Display for #name {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
+        }
     }
 }
 
@@ -519,6 +525,9 @@ fn convert_literal_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenSt
             String,
             Bool(bool),
             Nil,
+        }
+        impl fmt::Display for #struct_name {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
         }
     }
 }
