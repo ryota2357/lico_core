@@ -35,4 +35,37 @@ SOURCE_FILE@0..25
     END_KW@22..25 "end"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        FuncStmt {
+            func_token: FUNC_KW@0..4 "func",
+            name: Name {
+                ident: IDENT@5..8 "foo",
+            },
+            param_list: ParamList {
+                open_paren_token: OPEN_PAREN@8..9 "(",
+                params: none,
+                close_paren_token: CLOSE_PAREN@9..10 ")",
+            },
+            statements: [],
+            end_token: END_KW@11..14 "end",
+        },
+        FuncExpr {
+            func_token: FUNC_KW@15..19 "func",
+            param_list: ParamList {
+                open_paren_token: OPEN_PAREN@19..20 "(",
+                params: none,
+                close_paren_token: CLOSE_PAREN@20..21 ")",
+            },
+            statements: [],
+            end_token: END_KW@22..25 "end",
+        },
+    ],
+}
+```
+
 vim:ft=markdown

@@ -26,4 +26,24 @@ SOURCE_FILE@0..9
       INT@8..9 "1"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        VarStmt {
+            var_token: VAR_KW@0..3 "var",
+            pat: Name {
+                ident: IDENT@4..5 "x",
+            },
+            eq_token: EQ@6..7 "=",
+            expr: Literal {
+                token: INT@8..9 "1",
+            },
+        },
+    ],
+}
+```
+
 vim:ft=markdown

@@ -29,4 +29,28 @@ SOURCE_FILE@0..29
     CLOSE_BRACKET@28..29 "]"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        AttrStmt {
+            at_token: AT@0..1 "@",
+            bang_token: BANG@1..2 "!",
+            open_bracket_token: OPEN_BRACKET@2..3 "[",
+            command: IDENT@3..14 "global_attr",
+            close_bracket_token: CLOSE_BRACKET@14..15 "]",
+        },
+        AttrStmt {
+            at_token: AT@16..17 "@",
+            bang_token: none,
+            open_bracket_token: OPEN_BRACKET@17..18 "[",
+            command: IDENT@18..28 "local_attr",
+            close_bracket_token: CLOSE_BRACKET@28..29 "]",
+        },
+    ],
+}
+```
+
 vim:ft=markdown

@@ -26,4 +26,25 @@ SOURCE_FILE@0..17
       END_KW@14..17 "end"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        WhileStmt {
+            while_token: WHILE_KW@0..5 "while",
+            condition: Literal {
+                token: TRUE@6..10 "true",
+            },
+            loop_body: DoExpr {
+                do_token: DO_KW@11..13 "do",
+                statements: [],
+                end_token: END_KW@14..17 "end",
+            },
+        },
+    ],
+}
+```
+
 vim:ft=markdown

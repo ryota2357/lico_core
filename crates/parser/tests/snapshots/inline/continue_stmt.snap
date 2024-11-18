@@ -18,4 +18,17 @@ SOURCE_FILE@0..8
     CONTINUE_KW@0..8 "continue"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        ContinueStmt {
+            continue_token: CONTINUE_KW@0..8 "continue",
+        },
+    ],
+}
+```
+
 vim:ft=markdown

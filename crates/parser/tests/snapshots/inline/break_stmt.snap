@@ -18,4 +18,17 @@ SOURCE_FILE@0..5
     BREAK_KW@0..5 "break"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        BreakStmt {
+            break_token: BREAK_KW@0..5 "break",
+        },
+    ],
+}
+```
+
 vim:ft=markdown

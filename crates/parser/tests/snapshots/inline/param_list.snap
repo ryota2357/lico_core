@@ -70,4 +70,65 @@ SOURCE_FILE@0..48
     END_KW@45..48 "end"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        FuncStmt {
+            func_token: FUNC_KW@0..4 "func",
+            name: Name {
+                ident: IDENT@5..6 "f",
+            },
+            param_list: ParamList {
+                open_paren_token: OPEN_PAREN@6..7 "(",
+                params: Param {
+                    name: Name {
+                        ident: IDENT@7..8 "a",
+                    },
+                },
+                close_paren_token: CLOSE_PAREN@8..9 ")",
+            },
+            statements: [],
+            end_token: END_KW@10..13 "end",
+        },
+        FuncStmt {
+            func_token: FUNC_KW@14..18 "func",
+            name: Name {
+                ident: IDENT@19..20 "f",
+            },
+            param_list: ParamList {
+                open_paren_token: OPEN_PAREN@20..21 "(",
+                params: Param {
+                    name: Name {
+                        ident: IDENT@21..22 "a",
+                    },
+                },
+                close_paren_token: CLOSE_PAREN@25..26 ")",
+            },
+            statements: [],
+            end_token: END_KW@27..30 "end",
+        },
+        FuncStmt {
+            func_token: FUNC_KW@31..35 "func",
+            name: Name {
+                ident: IDENT@36..37 "f",
+            },
+            param_list: ParamList {
+                open_paren_token: OPEN_PAREN@37..38 "(",
+                params: Param {
+                    name: Name {
+                        ident: IDENT@38..39 "a",
+                    },
+                },
+                close_paren_token: CLOSE_PAREN@43..44 ")",
+            },
+            statements: [],
+            end_token: END_KW@45..48 "end",
+        },
+    ],
+}
+```
+
 vim:ft=markdown

@@ -98,4 +98,84 @@ SOURCE_FILE@0..88
       NIL@85..88 "nil"
 ```
 
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        VarStmt {
+            var_token: VAR_KW@0..3 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@4..5 "_",
+            },
+            eq_token: EQ@6..7 "=",
+            expr: Literal {
+                token: INT@8..9 "1",
+            },
+        },
+        VarStmt {
+            var_token: VAR_KW@10..13 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@14..15 "_",
+            },
+            eq_token: EQ@16..17 "=",
+            expr: Literal {
+                token: FLOAT@18..21 "2.3",
+            },
+        },
+        VarStmt {
+            var_token: VAR_KW@22..25 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@26..27 "_",
+            },
+            eq_token: EQ@28..29 "=",
+            expr: Literal {
+                token: STRING@30..35 "\"foo\"",
+            },
+        },
+        VarStmt {
+            var_token: VAR_KW@36..39 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@40..41 "_",
+            },
+            eq_token: EQ@42..43 "=",
+            expr: Literal {
+                token: STRING@44..49 "'bar'",
+            },
+        },
+        VarStmt {
+            var_token: VAR_KW@50..53 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@54..55 "_",
+            },
+            eq_token: EQ@56..57 "=",
+            expr: Literal {
+                token: TRUE@58..62 "true",
+            },
+        },
+        VarStmt {
+            var_token: VAR_KW@63..66 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@67..68 "_",
+            },
+            eq_token: EQ@69..70 "=",
+            expr: Literal {
+                token: FALSE@71..76 "false",
+            },
+        },
+        VarStmt {
+            var_token: VAR_KW@77..80 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@81..82 "_",
+            },
+            eq_token: EQ@83..84 "=",
+            expr: Literal {
+                token: NIL@85..88 "nil",
+            },
+        },
+    ],
+}
+```
+
 vim:ft=markdown
