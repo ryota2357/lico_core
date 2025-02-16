@@ -23,6 +23,9 @@ jobs:
           cargo check --workspace
           cargo clippy --workspace
 
+      - name: Codegen check
+        run: cargo codegen --check
+
   test:
     name: Test
     runs-on: ubuntu-latest
