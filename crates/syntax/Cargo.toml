@@ -5,4 +5,6 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
+indexed_arena = { workspace = true }
+lean_string = { workspace = true }
 rowan = { workspace = true }
