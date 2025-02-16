@@ -26,6 +26,7 @@ fn project_root() -> PathBuf {
 enum Level {
     Info,
     Warn,
+    Error,
 }
 
 fn message<S: AsRef<str>>(level: Level, msg: S) {
@@ -33,6 +34,7 @@ fn message<S: AsRef<str>>(level: Level, msg: S) {
     let prefix = match level {
         Level::Info => "info".blue(),
         Level::Warn => "warn".yellow(),
+        Level::Error => "error".red(),
     };
     let mut lines = msg.lines();
     println!("[{}] {}", prefix, lines.next().unwrap_or(""));

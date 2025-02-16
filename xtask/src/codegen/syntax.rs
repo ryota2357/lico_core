@@ -10,7 +10,7 @@ use std::{collections::HashMap, fs, iter};
 use ungrammar::{Grammar, Node, NodeData, Rule, Token, TokenData};
 use xshell::Shell;
 
-pub(crate) fn generate(sh: &Shell) -> Result<()> {
+pub(crate) fn generate(sh: &Shell, check: bool) -> Result<()> {
     let source = fs::read_to_string(project_root().join("crates/syntax/lico.ungram"))?;
     let grammar = source.parse::<Grammar>()?;
 
@@ -137,8 +137,13 @@ pub(crate) fn generate(sh: &Shell) -> Result<()> {
     ensure_file_contents(
         &project_root().join("crates/syntax/src/syntax_kind.rs"),
         &add_header(&syntax_kind_code),
+        check,
     )?;
-    ensure_file_contents(&project_root().join("crates/syntax/src/ast.rs"), &add_header(&ast_code))?;
+    ensure_file_contents(
+        &project_root().join("crates/syntax/src/ast.rs"),
+        &add_header(&ast_code),
+        check,
+    )?;
 
     Ok(())
 }

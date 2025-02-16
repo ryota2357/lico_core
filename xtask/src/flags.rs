@@ -6,6 +6,7 @@ xflags::xflags! {
     cmd xtask {
         cmd codegen {
             optional kind: CodegenKind
+            optional --check
         }
     }
 }
@@ -25,6 +26,8 @@ pub enum XtaskCmd {
 #[derive(Debug)]
 pub struct Codegen {
     pub kind: Option<CodegenKind>,
+
+    pub check: bool,
 }
 
 impl Xtask {

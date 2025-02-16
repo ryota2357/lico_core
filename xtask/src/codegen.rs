@@ -2,21 +2,22 @@ mod parser;
 mod syntax;
 
 use crate::{flags, message, project_root, Level};
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use std::{fs, path::Path};
 use xshell::{cmd, Shell};
 
 impl flags::Codegen {
     pub(crate) fn run(self, sh: &Shell) -> Result<()> {
         let kind = self.kind.unwrap_or_default();
+        let check = self.check;
         match kind {
             flags::CodegenKind::All => {
-                syntax::generate(sh)?;
-                parser::generate(sh)?;
+                syntax::generate(sh, check)?;
+                parser::generate(sh, check)?;
                 Ok(())
             }
-            flags::CodegenKind::Syntax => syntax::generate(sh),
-            flags::CodegenKind::Parser => parser::generate(sh),
+            flags::CodegenKind::Syntax => syntax::generate(sh, check),
+            flags::CodegenKind::Parser => parser::generate(sh, check),
         }
     }
 }
@@ -33,12 +34,15 @@ fn rustfmt(sh: &Shell, text: String) -> Result<String> {
     }
 }
 
-fn ensure_file_contents(path: &Path, contents: &str) -> Result<()> {
+fn ensure_file_contents(path: &Path, contents: &str, check: bool) -> Result<()> {
     let display_path = path.strip_prefix(project_root()).unwrap_or(path);
     if let Ok(old_contents) = fs::read_to_string(path) {
         if old_contents == contents {
             message(Level::Info, format!("{} is up to date", display_path.display()));
             return Ok(());
+        } else if check {
+            message(Level::Error, format!("{} is out of date", display_path.display()));
+            return Err(anyhow!("failed to check generated file"));
         }
     }
 
