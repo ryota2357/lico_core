@@ -24,9 +24,10 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
-lexer.path  = "crates/lexer"
-syntax.path = "crates/syntax"
-parser.path = "crates/parser"
+analyzer.path = "crates/analyzer"
+lexer.path    = "crates/lexer"
+parser.path   = "crates/parser"
+syntax.path   = "crates/syntax"
 
 [profile.release]
 lto = true
