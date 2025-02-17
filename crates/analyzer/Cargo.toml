@@ -6,3 +6,5 @@ edition.workspace = true
 
 [dependencies]
 syntax.path = "../syntax"
+lean_string = { workspace = true }
+rustc-hash = { workspace = true }

@@ -8,24 +8,36 @@ use lean_string::LeanString;
 
 pub struct Module {
     pub storage: Storage,
-    pub top_level: StmtIdRange,
+    pub top_level: StmtsId,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Symbol {
-    id: u32,
+    id: SymbolId,
     token: SyntaxToken,
 }
 
 impl Symbol {
-    pub fn new(id: u32, token: SyntaxToken) -> Self {
+    pub const fn new(id: SymbolId, token: SyntaxToken) -> Self {
         Symbol { id, token }
     }
-    pub fn token(&self) -> &SyntaxToken {
+    pub const fn token(&self) -> &SyntaxToken {
         &self.token
     }
-    pub fn id(&self) -> u32 {
+    pub const fn id(&self) -> SymbolId {
         self.id
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct SymbolId(u32);
+
+impl SymbolId {
+    pub const fn new(raw: u32) -> Self {
+        SymbolId(raw)
+    }
+    pub const fn raw(&self) -> u32 {
+        self.0
     }
 }
 
@@ -43,32 +55,43 @@ pub struct Expr {
 }
 
 impl Expr {
-    pub fn kind(&self) -> &ExprKind {
+    pub const fn kind(&self) -> &ExprKind {
         &self.kind
     }
-    pub fn node(&self) -> &SyntaxNode {
+    pub const fn node(&self) -> &SyntaxNode {
         &self.node
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct ExprId(Idx<Expr, NonZero<u32>>);
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct ExprIdRange(IdxRange<Expr, NonZero<u32>>);
+
+type OptExprId = Option<ExprId>;
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum ExprKind {
     Local { name: Symbol },
-    Int(i64),
-    Float(f64),
-    String(LeanString),
-    Bool(bool),
+    Int { value: i64 },
+    Float { value: f64 },
+    String { value: LeanString },
+    Bool { value: bool },
     Nil,
     Function(FuncId),
     Array { elements: ExprIdRange },
-    Table { fields: Box<[(ExprId, ExprId)]> },
-    Branch { condition: ExprId, then: (StmtId, ExprId), else_: (StmtId, ExprId) },
-    Prefix { op: PrefixOp, expr: ExprId },
-    Binary { op: BinaryOp, lhs: ExprId, rhs: ExprId },
-    Block { stmts: StmtIdRange, tail: ExprId },
-    Call { expr: ExprId, args: ExprIdRange },
-    MethodCall { expr: ExprId, name: Symbol, args: ExprIdRange },
-    Field { expr: ExprId, field: ExprId },
+    Table { fields: Box<[(OptExprId, OptExprId)]> },
+    Branch { clauses: Box<[(OptExprId, StmtsId, OptExprId)]> },
+    Prefix { op: PrefixOp, expr: OptExprId },
+    Binary { op: BinaryOp, lhs: OptExprId, rhs: OptExprId },
+    Block { init: StmtsId, last: OptExprId },
+    Call { expr: OptExprId, args: ExprIdRange },
+    MethodCall { receiver: OptExprId, name: Symbol, args: ExprIdRange },
+    Field { expr: OptExprId, field: OptExprId },
+    UnkownLocal,
+    InvalidInt,
+    InvalidFloat,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
@@ -113,58 +136,56 @@ pub struct Stmt {
 }
 
 impl Stmt {
-    pub fn kind(&self) -> &StmtKind {
+    pub const fn kind(&self) -> &StmtKind {
         &self.kind
     }
-    pub fn node(&self) -> &SyntaxNode {
+    pub const fn node(&self) -> &SyntaxNode {
         &self.node
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct StmtsId(IdxRange<Stmt, u32>);
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum StmtKind {
-    MakeLocal { name: Symbol, expr: ExprId },
+    MakeLocal { name: Symbol, expr: OptExprId },
     MakeFunc { name: Symbol, func: FuncId },
-    SetLocal { local: Symbol, expr: ExprId },
-    SetField { target: ExprId, field: ExprId, expr: ExprId },
-    Branch { condition: ExprId, then: StmtId, else_: StmtId },
-    ForLoop { variable: Symbol, iterable: ExprId, body: StmtId },
-    WhileLoop { condition: ExprId, body: StmtId },
-    Block { stmts: StmtIdRange },
-    Call { expr: ExprId, args: ExprIdRange },
-    MethodCall { table: ExprId, name: Symbol, args: ExprIdRange },
-    Return { expr: ExprId },
+    SetLocal { name: Symbol, expr: OptExprId },
+    SetField { target: OptExprId, field: OptExprId, expr: OptExprId },
+    Branch { clauses: Box<[(OptExprId, StmtsId)]> },
+    ForLoop { variable: Option<Symbol>, iterable: OptExprId, body: StmtsId },
+    WhileLoop { condition: OptExprId, body: StmtsId },
+    Block { stmts: StmtsId },
+    Call { expr: OptExprId, args: ExprIdRange },
+    MethodCall { receiver: OptExprId, name: Symbol, args: ExprIdRange },
+    Return { expr: OptExprId },
     BreakLoop,
     ContinueLoop,
-    NoEffectExpr { expr: ExprId },
+    DiscardResult { expr: OptExprId, explicit_discard: Option<SyntaxNode> },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Func {
-    args: Box<[Symbol]>,
-    body: Box<[StmtId]>,
+    params: Box<[Symbol]>,
+    body: (StmtsId, OptExprId),
     node: SyntaxNode,
 }
 
 impl Func {
-    pub fn args(&self) -> &[Symbol] {
-        &self.args
+    pub const fn params(&self) -> &[Symbol] {
+        &self.params
     }
-    pub fn body(&self) -> &[StmtId] {
+    pub const fn body(&self) -> &(StmtsId, OptExprId) {
         &self.body
     }
-    pub fn node(&self) -> &SyntaxNode {
+    pub const fn node(&self) -> &SyntaxNode {
         &self.node
     }
 }
 
-pub type ExprId = Option<Idx<Expr, NonZero<u32>>>;
-pub type ExprIdRange = IdxRange<Expr, NonZero<u32>>;
-
-pub type StmtId = Idx<Stmt, u32>;
-pub type StmtIdRange = IdxRange<Stmt, u32>;
-
-pub type FuncId = Idx<Func, u32>;
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct FuncId(Idx<Func, u32>);
 
 #[derive(Clone, PartialEq)]
 pub struct Storage {
@@ -174,21 +195,21 @@ pub struct Storage {
 }
 
 impl Storage {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self { func_arena: Arena::new(), expr_arena: Arena::new(), stmt_arena: Arena::new() }
     }
 
     pub fn add_func(
         &mut self,
-        args: Box<[Symbol]>,
-        body: Box<[StmtId]>,
+        params: Box<[Symbol]>,
+        body: (StmtsId, OptExprId),
         node: SyntaxNode,
     ) -> FuncId {
-        self.func_arena.alloc(Func { args, body, node })
+        FuncId(self.func_arena.alloc(Func { params, body, node }))
     }
 
     pub fn add_expr(&mut self, kind: ExprKind, node: SyntaxNode) -> ExprId {
-        Some(self.expr_arena.alloc(Expr { kind, node }))
+        ExprId(self.expr_arena.alloc(Expr { kind, node }))
     }
 
     pub fn add_exprs<I>(&mut self, exprs: I) -> ExprIdRange
@@ -196,31 +217,31 @@ impl Storage {
         I: IntoIterator<Item = (ExprKind, SyntaxNode)>,
     {
         let exprs = exprs.into_iter().map(|(kind, node)| Expr { kind, node });
-        self.expr_arena.alloc_many(exprs)
+        ExprIdRange(self.expr_arena.alloc_many(exprs))
     }
 
-    pub fn add_stmt(&mut self, kind: StmtKind, node: SyntaxNode) -> StmtId {
-        self.stmt_arena.alloc(Stmt { kind, node })
-    }
-
-    pub fn add_stmts<I>(&mut self, stmts: I) -> StmtIdRange
+    pub fn add_stmts<I>(&mut self, stmts: I) -> StmtsId
     where
         I: IntoIterator<Item = (StmtKind, SyntaxNode)>,
     {
         let stmts = stmts.into_iter().map(|(kind, node)| Stmt { kind, node });
-        self.stmt_arena.alloc_many(stmts)
+        StmtsId(self.stmt_arena.alloc_many(stmts))
     }
 
     pub fn get_func(&self, id: FuncId) -> &Func {
-        &self.func_arena[id]
+        &self.func_arena[id.0]
     }
 
-    pub fn get_expr(&self, id: ExprId) -> Option<&Expr> {
-        id.map(|id| &self.expr_arena[id])
+    pub fn get_expr(&self, id: ExprId) -> &Expr {
+        &self.expr_arena[id.0]
     }
 
-    pub fn get_stmt(&self, id: StmtId) -> &Stmt {
-        &self.stmt_arena[id]
+    pub fn get_exprs(&self, id: ExprIdRange) -> &[Expr] {
+        &self.expr_arena[id.0]
+    }
+
+    pub fn get_stmts(&self, id: StmtsId) -> &[Stmt] {
+        &self.stmt_arena[id.0]
     }
 }
 
