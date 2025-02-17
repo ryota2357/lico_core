@@ -1,0 +1,49 @@
+---
+source: crates/parser/tests/inline.rs
+snapshot_kind: text
+---
+# local
+
+## Input
+
+```
+var _ = foo_bar
+```
+
+## CST
+
+```
+SOURCE_FILE@0..15
+  VAR_STMT@0..15
+    VAR_KW@0..3 "var"
+    WHITESPACE@3..4 " "
+    WILDCARD_PAT@4..5
+      UNDERSCORE@4..5 "_"
+    WHITESPACE@5..6 " "
+    EQ@6..7 "="
+    WHITESPACE@7..8 " "
+    LOCAL@8..15
+      IDENT@8..15 "foo_bar"
+```
+
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    stmt: [
+        VarStmt {
+            var_token: VAR_KW@0..3 "var",
+            pat: WildcardPat {
+                underscore_token: UNDERSCORE@4..5 "_",
+            },
+            eq_token: EQ@6..7 "=",
+            expr: Local {
+                name: none,
+            },
+        },
+    ],
+}
+```
+
+vim:ft=markdown

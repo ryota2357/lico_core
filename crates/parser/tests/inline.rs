@@ -11,6 +11,12 @@ fn expr_literals() {
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
+fn local() {
+    let source = include_str!("../test_data/inline/local.lico");
+    let snapshot = utils::make_snapshot("local", source);
+    utils::assert_snapshot!(GROUP, snapshot);
+}
+#[test]
 fn param_list() {
     let source = include_str!("../test_data/inline/param_list.lico");
     let snapshot = utils::make_snapshot("param_list", source);

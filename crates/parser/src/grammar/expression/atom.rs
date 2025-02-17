@@ -1,6 +1,7 @@
 use super::*;
 
 pub(super) const ATOM_EXPR_FIRST: TokenSet = LITERA_FIRST.union(TokenSet::new(&[
+    IDENT,    // func_expr
     T!['('],  // paren_expr
     T!['['],  // array_expr
     T!['{'],  // table_expr
@@ -14,6 +15,7 @@ pub(super) fn atom_expr(p: &mut Parser) -> CompletedMarker {
 
     // SAFETY: `p.current()` is not `None` because `p.at_ts(ATOM_EXPR_FIRST)` is `true`.
     match unsafe { p.current().unwrap_unchecked() } {
+        IDENT => local(p),
         T!['('] => paren_expr(p),
         T!['['] => array_expr(p),
         T!['{'] => table_expr(p),
@@ -40,6 +42,14 @@ fn literal(p: &mut Parser) -> CompletedMarker {
     let m = p.start();
     p.bump_any();
     m.complete(p, LITERAL)
+}
+
+// :test local
+// var _ = foo_bar
+fn local(p: &mut Parser) -> CompletedMarker {
+    let m = p.start();
+    p.bump(IDENT);
+    m.complete(p, LOCAL)
 }
 
 pub fn paren_expr(p: &mut Parser) -> CompletedMarker {
