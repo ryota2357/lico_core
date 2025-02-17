@@ -3,5 +3,12 @@
   "extends": [
     "config:recommended"
   ],
-  "rangeStrategy": "bump"
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "groupName": "patch dependencies",
+      "matchDepTypes": ["dependencies", "devDependencies"],
+      "matchUpdateTypes": ["patch"]
+    }
+  ]
 }
