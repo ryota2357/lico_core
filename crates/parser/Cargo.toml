@@ -11,4 +11,4 @@ rowan = { workspace = true }
 [dev-dependencies]
 lexer.path = "../lexer"
 parser.path = "../parser"
-insta = "1.41.1"
+insta = "1.42.1"
