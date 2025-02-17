@@ -1,6 +1,5 @@
 ---
 source: crates/parser/tests/inline.rs
-snapshot_kind: text
 ---
 # continue_stmt
 
