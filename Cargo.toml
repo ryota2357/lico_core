@@ -11,7 +11,7 @@ authors = ["ryota2357"]
 edition = "2021"
 
 [workspace.dependencies]
-indexed_arena = "0.1.0"
+indexed_arena = "0.2.0"
 lean_string = "0.4.0"
 rowan = "0.16.1"
 unicode-ident = "1.0.16"
