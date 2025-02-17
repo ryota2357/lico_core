@@ -14,7 +14,7 @@ edition = "2021"
 indexed_arena = "0.1.0"
 lean_string = "0.4.0"
 rowan = "0.16.1"
-unicode-ident = "1.0.12"
+unicode-ident = "1.0.16"
 unicode-properties = { version = "0.1.1", default-features = false }
 
 [package]
