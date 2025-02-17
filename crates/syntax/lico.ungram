@@ -67,7 +67,7 @@ Expr =
 
 ArrayExpr =
   '['
-     (Expr (',' Expr)* ','?)?
+     elements:(Expr (',' Expr)* ','?)?
   ']'
 
 BinaryExpr =

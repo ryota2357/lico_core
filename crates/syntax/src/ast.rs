@@ -802,7 +802,7 @@ impl ArrayExpr {
     pub fn open_bracket_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::OPEN_BRACKET)
     }
-    pub fn expr(&self) -> AstChildren<Expr> { support::children(AstNode::syntax(self)) }
+    pub fn elements(&self) -> AstChildren<Expr> { support::children(AstNode::syntax(self)) }
     pub fn close_bracket_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACKET)
     }
@@ -814,7 +814,7 @@ impl fmt::Debug for ArrayExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("ArrayExpr")
             .field("open_bracket_token", &support::DebugSyntaxToken(self.open_bracket_token()))
-            .field("expr", &support::DebugAstChildren(self.expr()))
+            .field("elements", &support::DebugAstChildren(self.elements()))
             .field("close_bracket_token", &support::DebugSyntaxToken(self.close_bracket_token()))
             .finish()
     }

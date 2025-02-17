@@ -11,39 +11,32 @@ pub struct Module {
     pub top_level: StmtIdRange,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Symbol {
+    id: u32,
     token: SyntaxToken,
-    generation: u32,
 }
 
 impl Symbol {
-    pub fn new(token: SyntaxToken, generation: u32) -> Self {
-        Self { token, generation }
+    pub fn new(id: u32, token: SyntaxToken) -> Self {
+        Symbol { id, token }
     }
     pub fn token(&self) -> &SyntaxToken {
         &self.token
     }
-    pub fn generation(&self) -> u32 {
-        self.generation
+    pub fn id(&self) -> u32 {
+        self.id
     }
 }
-
-impl PartialEq for Symbol {
-    fn eq(&self, other: &Self) -> bool {
-        self.token.text() == other.token.text() && self.generation == other.generation
-    }
-}
-impl Eq for Symbol {}
 
 impl Hash for Symbol {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.token.text().hash(state);
-        self.generation.hash(state);
+        self.id.hash(state);
     }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Expr {
     kind: ExprKind,
     node: SyntaxNode,
@@ -58,7 +51,7 @@ impl Expr {
     }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum ExprKind {
     Local { name: Symbol },
     Int(i64),
@@ -70,20 +63,21 @@ pub enum ExprKind {
     Array { elements: ExprIdRange },
     Table { fields: Box<[(ExprId, ExprId)]> },
     Branch { condition: ExprId, then: (StmtId, ExprId), else_: (StmtId, ExprId) },
-    Prefix { op: PrefixOp, value: ExprId },
+    Prefix { op: PrefixOp, expr: ExprId },
     Binary { op: BinaryOp, lhs: ExprId, rhs: ExprId },
-    Block { effects: StmtIdRange, tail: ExprId },
-    Call { value: ExprId, args: ExprIdRange },
+    Block { stmts: StmtIdRange, tail: ExprId },
+    Call { expr: ExprId, args: ExprIdRange },
     MethodCall { expr: ExprId, name: Symbol, args: ExprIdRange },
-    Field { value: ExprId, field: ExprId },
+    Field { expr: ExprId, field: ExprId },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum PrefixOp {
     Plus(SyntaxToken),
     Minus(SyntaxToken),
-    Not(SyntaxToken),
     BitNot(SyntaxToken),
+    Not(SyntaxToken),
+    TypeOf(SyntaxToken),
     Missing,
 }
 
@@ -112,7 +106,7 @@ pub enum BinaryOp {
     Missing,
 }
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Stmt {
     kind: StmtKind,
     node: SyntaxNode,
@@ -127,25 +121,25 @@ impl Stmt {
     }
 }
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum StmtKind {
     MakeLocal { name: Symbol, expr: ExprId },
     MakeFunc { name: Symbol, func: FuncId },
     SetLocal { local: Symbol, expr: ExprId },
-    SetField { target: ExprId, field: ExprId, value: ExprId },
+    SetField { target: ExprId, field: ExprId, expr: ExprId },
     Branch { condition: ExprId, then: StmtId, else_: StmtId },
     ForLoop { variable: Symbol, iterable: ExprId, body: StmtId },
     WhileLoop { condition: ExprId, body: StmtId },
     Block { stmts: StmtIdRange },
-    Call { value: ExprId, args: ExprIdRange },
+    Call { expr: ExprId, args: ExprIdRange },
     MethodCall { table: ExprId, name: Symbol, args: ExprIdRange },
-    Return { value: ExprId },
+    Return { expr: ExprId },
     BreakLoop,
     ContinueLoop,
-    NoEffectExpr { value: ExprId },
+    NoEffectExpr { expr: ExprId },
 }
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Func {
     args: Box<[Symbol]>,
     body: Box<[StmtId]>,
@@ -197,8 +191,24 @@ impl Storage {
         Some(self.expr_arena.alloc(Expr { kind, node }))
     }
 
+    pub fn add_exprs<I>(&mut self, exprs: I) -> ExprIdRange
+    where
+        I: IntoIterator<Item = (ExprKind, SyntaxNode)>,
+    {
+        let exprs = exprs.into_iter().map(|(kind, node)| Expr { kind, node });
+        self.expr_arena.alloc_many(exprs)
+    }
+
     pub fn add_stmt(&mut self, kind: StmtKind, node: SyntaxNode) -> StmtId {
         self.stmt_arena.alloc(Stmt { kind, node })
+    }
+
+    pub fn add_stmts<I>(&mut self, stmts: I) -> StmtIdRange
+    where
+        I: IntoIterator<Item = (StmtKind, SyntaxNode)>,
+    {
+        let stmts = stmts.into_iter().map(|(kind, node)| Stmt { kind, node });
+        self.stmt_arena.alloc_many(stmts)
     }
 
     pub fn get_func(&self, id: FuncId) -> &Func {
