@@ -83,11 +83,13 @@ SourceFile {
             },
             param_list: ParamList {
                 open_paren_token: OPEN_PAREN@6..7 "(",
-                params: Param {
-                    name: Name {
-                        ident: IDENT@7..8 "a",
+                params: [
+                    Param {
+                        name: Name {
+                            ident: IDENT@7..8 "a",
+                        },
                     },
-                },
+                ],
                 close_paren_token: CLOSE_PAREN@8..9 ")",
             },
             statements: [],
@@ -100,11 +102,18 @@ SourceFile {
             },
             param_list: ParamList {
                 open_paren_token: OPEN_PAREN@20..21 "(",
-                params: Param {
-                    name: Name {
-                        ident: IDENT@21..22 "a",
+                params: [
+                    Param {
+                        name: Name {
+                            ident: IDENT@21..22 "a",
+                        },
                     },
-                },
+                    Param {
+                        name: Name {
+                            ident: IDENT@24..25 "b",
+                        },
+                    },
+                ],
                 close_paren_token: CLOSE_PAREN@25..26 ")",
             },
             statements: [],
@@ -117,11 +126,18 @@ SourceFile {
             },
             param_list: ParamList {
                 open_paren_token: OPEN_PAREN@37..38 "(",
-                params: Param {
-                    name: Name {
-                        ident: IDENT@38..39 "a",
+                params: [
+                    Param {
+                        name: Name {
+                            ident: IDENT@38..39 "a",
+                        },
                     },
-                },
+                    Param {
+                        name: Name {
+                            ident: IDENT@41..42 "b",
+                        },
+                    },
+                ],
                 close_paren_token: CLOSE_PAREN@43..44 ")",
             },
             statements: [],

@@ -764,7 +764,7 @@ impl ParamList {
     pub fn open_paren_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::OPEN_PAREN)
     }
-    pub fn params(&self) -> Option<Param> { support::child(AstNode::syntax(self)) }
+    pub fn params(&self) -> AstChildren<Param> { support::children(AstNode::syntax(self)) }
     pub fn close_paren_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_PAREN)
     }
@@ -776,7 +776,7 @@ impl fmt::Debug for ParamList {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("ParamList")
             .field("open_paren_token", &support::DebugSyntaxToken(self.open_paren_token()))
-            .field("params", &support::DebugAstNode(self.params()))
+            .field("params", &support::DebugAstChildren(self.params()))
             .field("close_paren_token", &support::DebugSyntaxToken(self.close_paren_token()))
             .finish()
     }
@@ -802,7 +802,7 @@ impl ArrayExpr {
     pub fn open_bracket_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::OPEN_BRACKET)
     }
-    pub fn expr(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
+    pub fn expr(&self) -> AstChildren<Expr> { support::children(AstNode::syntax(self)) }
     pub fn close_bracket_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACKET)
     }
@@ -814,7 +814,7 @@ impl fmt::Debug for ArrayExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("ArrayExpr")
             .field("open_bracket_token", &support::DebugSyntaxToken(self.open_bracket_token()))
-            .field("expr", &support::DebugAstNode(self.expr()))
+            .field("expr", &support::DebugAstChildren(self.expr()))
             .field("close_bracket_token", &support::DebugSyntaxToken(self.close_bracket_token()))
             .finish()
     }
@@ -1370,7 +1370,7 @@ impl TableExpr {
     pub fn open_brace_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::OPEN_BRACE)
     }
-    pub fn fields(&self) -> Option<TableField> { support::child(AstNode::syntax(self)) }
+    pub fn fields(&self) -> AstChildren<TableField> { support::children(AstNode::syntax(self)) }
     pub fn close_brace_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_BRACE)
     }
@@ -1382,7 +1382,7 @@ impl fmt::Debug for TableExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("TableExpr")
             .field("open_brace_token", &support::DebugSyntaxToken(self.open_brace_token()))
-            .field("fields", &support::DebugAstNode(self.fields()))
+            .field("fields", &support::DebugAstChildren(self.fields()))
             .field("close_brace_token", &support::DebugSyntaxToken(self.close_brace_token()))
             .finish()
     }
@@ -1408,7 +1408,7 @@ impl ArgList {
     pub fn open_paren_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::OPEN_PAREN)
     }
-    pub fn args(&self) -> Option<Expr> { support::child(AstNode::syntax(self)) }
+    pub fn args(&self) -> AstChildren<Expr> { support::children(AstNode::syntax(self)) }
     pub fn close_paren_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::CLOSE_PAREN)
     }
@@ -1420,7 +1420,7 @@ impl fmt::Debug for ArgList {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("ArgList")
             .field("open_paren_token", &support::DebugSyntaxToken(self.open_paren_token()))
-            .field("args", &support::DebugAstNode(self.args()))
+            .field("args", &support::DebugAstChildren(self.args()))
             .field("close_paren_token", &support::DebugSyntaxToken(self.close_paren_token()))
             .finish()
     }

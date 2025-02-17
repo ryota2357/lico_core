@@ -418,7 +418,7 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
                     Rule::Seq(seq) => match try_simp_seq_to_node_name(seq, grammar) {
                         Some(node_name) => {
                             let field_ty = node_name.to_case(Case::UpperCamel);
-                            build_helper.push_child(&field_name, &field_ty);
+                            build_helper.push_children(&field_name, &field_ty);
                         }
                         None => panic!("complex rule {:?} in {}", field, name),
                     },
@@ -475,7 +475,7 @@ fn convert_node_to_struct(node: &NodeData, grammar: &Grammar) -> TokenStream {
                 Some(node_name) => {
                     let field_name = node_name.to_case(Case::Snake);
                     let field_ty = node_name.to_case(Case::UpperCamel);
-                    build_helper.push_child(&field_name, &field_ty);
+                    build_helper.push_children(&field_name, &field_ty);
                 }
                 None => panic!("complex rule {:?} in {}", field, name),
             },

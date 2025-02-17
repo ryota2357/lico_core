@@ -48,7 +48,7 @@ SourceFile {
             },
             param_list: ParamList {
                 open_paren_token: OPEN_PAREN@8..9 "(",
-                params: none,
+                params: [],
                 close_paren_token: CLOSE_PAREN@9..10 ")",
             },
             statements: [],
@@ -58,7 +58,7 @@ SourceFile {
             func_token: FUNC_KW@15..19 "func",
             param_list: ParamList {
                 open_paren_token: OPEN_PAREN@19..20 "(",
-                params: none,
+                params: [],
                 close_paren_token: CLOSE_PAREN@20..21 ")",
             },
             statements: [],
