@@ -9,8 +9,8 @@ pub struct SyntaxError {
 }
 
 impl SyntaxError {
-    pub fn new(message: Cow<'static, str>, range: TextRange) -> Self {
-        Self { message, range }
+    pub fn new(message: impl Into<Cow<'static, str>>, range: TextRange) -> Self {
+        Self { message: message.into(), range }
     }
 
     pub fn message(&self) -> &str {

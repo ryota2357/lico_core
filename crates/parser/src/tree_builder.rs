@@ -32,10 +32,8 @@ impl<'s> TreeBuilder<'s> {
             syntax_kinds.push(kind);
             start_offsets.push(offset);
             if let Some(err) = err {
-                syntax_errors.push(SyntaxError::new(
-                    err.into(),
-                    TextRange::at(offset.into(), token.len.into()),
-                ));
+                let range = TextRange::at(offset.into(), token.len.into());
+                syntax_errors.push(SyntaxError::new(err, range))
             }
             offset += token.len;
         }
