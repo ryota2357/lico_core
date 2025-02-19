@@ -1,6 +1,6 @@
 SourceFile =
   '$shebang'?
-  Stmt*
+  statements:Stmt*
 
 //************//
 // Statements //

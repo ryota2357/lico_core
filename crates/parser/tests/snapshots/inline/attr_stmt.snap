@@ -33,7 +33,7 @@ SOURCE_FILE@0..29
 ```
 SourceFile {
     shebang: none,
-    stmt: [
+    statements: [
         AttrStmt {
             at_token: AT@0..1 "@",
             bang_token: BANG@1..2 "!",

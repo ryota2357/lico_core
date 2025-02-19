@@ -102,7 +102,7 @@ SOURCE_FILE@0..88
 ```
 SourceFile {
     shebang: none,
-    stmt: [
+    statements: [
         VarStmt {
             var_token: VAR_KW@0..3 "var",
             pat: WildcardPat {

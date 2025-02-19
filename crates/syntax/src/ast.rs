@@ -57,7 +57,7 @@ impl SourceFile {
     pub fn shebang(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::SHEBANG)
     }
-    pub fn stmt(&self) -> AstChildren<Stmt> { support::children(AstNode::syntax(self)) }
+    pub fn statements(&self) -> AstChildren<Stmt> { support::children(AstNode::syntax(self)) }
 }
 impl fmt::Display for SourceFile {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Display::fmt(self.syntax(), f) }
@@ -66,7 +66,7 @@ impl fmt::Debug for SourceFile {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("SourceFile")
             .field("shebang", &support::DebugSyntaxToken(self.shebang()))
-            .field("stmt", &support::DebugAstChildren(self.stmt()))
+            .field("statements", &support::DebugAstChildren(self.statements()))
             .finish()
     }
 }

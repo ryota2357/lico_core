@@ -22,7 +22,7 @@ SOURCE_FILE@0..8
 ```
 SourceFile {
     shebang: none,
-    stmt: [
+    statements: [
         ContinueStmt {
             continue_token: CONTINUE_KW@0..8 "continue",
         },

@@ -22,7 +22,7 @@ SOURCE_FILE@0..5
 ```
 SourceFile {
     shebang: none,
-    stmt: [
+    statements: [
         BreakStmt {
             break_token: BREAK_KW@0..5 "break",
         },

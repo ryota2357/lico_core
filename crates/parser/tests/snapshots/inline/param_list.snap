@@ -74,7 +74,7 @@ SOURCE_FILE@0..48
 ```
 SourceFile {
     shebang: none,
-    stmt: [
+    statements: [
         FuncStmt {
             func_token: FUNC_KW@0..4 "func",
             name: Name {

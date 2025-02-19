@@ -30,7 +30,7 @@ SOURCE_FILE@0..17
 ```
 SourceFile {
     shebang: none,
-    stmt: [
+    statements: [
         WhileStmt {
             while_token: WHILE_KW@0..5 "while",
             condition: Literal {
