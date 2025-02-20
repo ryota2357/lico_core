@@ -7,7 +7,7 @@
   "packageRules": [
     {
       "groupName": "patch dependencies",
-      "matchDepTypes": ["dependencies", "devDependencies"],
+      "matchDepTypes": ["dependencies", "dev-dependencies", "workspace.dependencies"],
       "matchUpdateTypes": ["patch"]
     }
   ]
