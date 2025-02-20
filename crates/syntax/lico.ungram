@@ -97,7 +97,7 @@ IfExpr =
   'if' condition:Expr 'then'
   statements:Stmt*
   elif_branches:ElifBranch*
-  else_branche:ElseBranch?
+  else_branch:ElseBranch?
   'end'
 ElifBranch =
   'elif' condition:Expr 'then'

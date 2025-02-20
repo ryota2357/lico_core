@@ -1067,7 +1067,7 @@ impl IfExpr {
     pub fn elif_branches(&self) -> AstChildren<ElifBranch> {
         support::children(AstNode::syntax(self))
     }
-    pub fn else_branche(&self) -> Option<ElseBranch> { support::child(AstNode::syntax(self)) }
+    pub fn else_branch(&self) -> Option<ElseBranch> { support::child(AstNode::syntax(self)) }
     pub fn end_token(&self) -> Option<SyntaxToken> {
         support::token(AstNode::syntax(self), SyntaxKind::END_KW)
     }
@@ -1083,7 +1083,7 @@ impl fmt::Debug for IfExpr {
             .field("then_token", &support::DebugSyntaxToken(self.then_token()))
             .field("statements", &support::DebugAstChildren(self.statements()))
             .field("elif_branches", &support::DebugAstChildren(self.elif_branches()))
-            .field("else_branche", &support::DebugAstNode(self.else_branche()))
+            .field("else_branch", &support::DebugAstNode(self.else_branch()))
             .field("end_token", &support::DebugSyntaxToken(self.end_token()))
             .finish()
     }
