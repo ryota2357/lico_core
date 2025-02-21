@@ -169,7 +169,11 @@ fn while_(ctx: &mut Context, node: &ast::WhileStmt) -> hir::StmtKind {
 fn fallback(ctx: &mut Context, node: &ast::Expr) -> hir::StmtKind {
     match node {
         ast::Expr::Array(_) => {}
-        ast::Expr::Binary(_) => {}
+        ast::Expr::Binary(node) => {
+            if let Some(ast::BinaryOp::Assign) = node.op_kind() {
+                return assign(ctx, node);
+            }
+        }
         ast::Expr::Call(node) => return call(ctx, node),
         ast::Expr::Do(node) => return do_(ctx, node),
         ast::Expr::Field(_) => {}
@@ -186,6 +190,86 @@ fn fallback(ctx: &mut Context, node: &ast::Expr) -> hir::StmtKind {
     let kind = expr(ctx, node);
     hir::StmtKind::DiscardResult {
         expr: Some(ctx.storage.add_expr(kind, node.syntax().clone())),
+        explicit_discard: None,
+    }
+}
+
+fn assign(ctx: &mut Context, node: &ast::BinaryExpr) -> hir::StmtKind {
+    const INVALID_LHS_MSG: &str = "Invalid left-hand side of assignment";
+    let rhs = node.rhs().map(|lhs| {
+        let kind = expr(ctx, &lhs);
+        ctx.storage.add_expr(kind, lhs.syntax().clone())
+    });
+    let Some(mut lhs) = node.lhs() else {
+        return hir::StmtKind::DiscardResult { expr: rhs, explicit_discard: None };
+    };
+    while let ast::Expr::Paren(paren) = lhs {
+        if let Some(inner) = paren.expr() {
+            lhs = inner;
+        } else {
+            ctx.errors.push(SyntaxError::new(INVALID_LHS_MSG, paren.syntax().text_range()));
+            return hir::StmtKind::DiscardResult { expr: rhs, explicit_discard: None };
+        }
+    }
+    match lhs {
+        ast::Expr::Array(_) => {}
+        ast::Expr::Binary(_) => {}
+        ast::Expr::Call(_) => {}
+        ast::Expr::Do(_) => {}
+        ast::Expr::Field(node) => {
+            return hir::StmtKind::SetField {
+                target: node.expr().map(|t| {
+                    let kind = expr(ctx, &t);
+                    ctx.storage.add_expr(kind, t.syntax().clone())
+                }),
+                field: node.name().and_then(|name| {
+                    // Desugar `expr.name` to `expr["name"]`.
+                    let string = hir::ExprKind::String { value: name.ident()?.text().into() };
+                    Some(ctx.storage.add_expr(string, name.syntax().clone()))
+                }),
+                expr: rhs,
+            };
+        }
+        ast::Expr::Func(_) => {}
+        ast::Expr::If(_) => {}
+        ast::Expr::Index(node) => {
+            return hir::StmtKind::SetField {
+                target: node.expr().map(|t| {
+                    let kind = expr(ctx, &t);
+                    ctx.storage.add_expr(kind, t.syntax().clone())
+                }),
+                field: node.index().map(|i| {
+                    let kind = expr(ctx, &i);
+                    ctx.storage.add_expr(kind, i.syntax().clone())
+                }),
+                expr: rhs,
+            };
+        }
+        ast::Expr::Literal(_) => {}
+        ast::Expr::Local(node) => {
+            let name = node
+                .name()
+                .and_then(|name| name.ident())
+                .unwrap_or_else(|| unexpected_ast!("Local assignment has no name or ident"));
+            return hir::StmtKind::SetLocal {
+                name: hir::Symbol::new(ctx.bindings.add(name.text().into()), name),
+                expr: rhs,
+            };
+        }
+        ast::Expr::MethodCall(_) => {}
+        ast::Expr::Paren(_) => unreachable!("Paren should have been unwrapped"),
+        ast::Expr::Prefix(_) => {}
+        ast::Expr::Table(_) => {}
+    }
+    ctx.errors.push(SyntaxError::new(INVALID_LHS_MSG, lhs.syntax().text_range()));
+    hir::StmtKind::DiscardResult {
+        // fallback to: lhs `Missing` rhs
+        expr: {
+            let lhs_kind = expr(ctx, &lhs);
+            let lhs_id = ctx.storage.add_expr(lhs_kind, lhs.syntax().clone());
+            let kind = hir::ExprKind::Binary { op: hir::BinaryOp::Missing, lhs: Some(lhs_id), rhs };
+            Some(ctx.storage.add_expr(kind, node.syntax().clone()))
+        },
         explicit_discard: None,
     }
 }
