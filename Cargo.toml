@@ -30,6 +30,7 @@ lexer.path    = "crates/lexer"
 parser.path   = "crates/parser"
 syntax.path   = "crates/syntax"
 compiler.path = "crates/compiler"
+runtime.path  = "crates/runtime"
 
 [profile.release]
 lto = true
