@@ -47,7 +47,13 @@ fn binary(ctx: &mut Context, node: &ast::BinaryExpr) -> hir::ExprKind {
         }),
         op: if let Some((st, op)) = node.op() {
             match op {
-                ast::BinaryOp::Assign => hir::BinaryOp::Assign(st),
+                ast::BinaryOp::Assign => {
+                    ctx.errors.push(SyntaxError::new(
+                        "Should use `==` for equality comparison",
+                        st.text_range(),
+                    ));
+                    hir::BinaryOp::Eq(st)
+                }
                 ast::BinaryOp::And => hir::BinaryOp::And(st),
                 ast::BinaryOp::Or => hir::BinaryOp::Or(st),
                 ast::BinaryOp::Eq => hir::BinaryOp::Eq(st),

@@ -106,7 +106,6 @@ pub enum PrefixOp {
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum BinaryOp {
-    Assign(SyntaxToken),
     And(SyntaxToken),
     Or(SyntaxToken),
     Eq(SyntaxToken),
