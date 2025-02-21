@@ -1,4 +1,4 @@
-use syntax::{token::TokenStream, GreenNode, SyntaxError};
+use syntax::{GreenNode, SyntaxError, token::TokenStream};
 
 mod grammar;
 

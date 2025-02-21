@@ -1,10 +1,10 @@
 mod parser;
 mod syntax;
 
-use crate::{flags, message, project_root, Level};
-use anyhow::{anyhow, Result};
+use crate::{Level, flags, message, project_root};
+use anyhow::{Result, anyhow};
 use std::{fs, path::Path};
-use xshell::{cmd, Shell};
+use xshell::{Shell, cmd};
 
 impl flags::Codegen {
     pub(crate) fn run(self, sh: &Shell) -> Result<()> {
@@ -27,11 +27,7 @@ fn rustfmt(sh: &Shell, text: String) -> Result<String> {
     let stdout = cmd!(sh, "rustfmt --config-path {rustfmt_toml} --config fn_single_line=true")
         .stdin(text)
         .read()?;
-    if !stdout.ends_with('\n') {
-        Ok(format!("{stdout}\n"))
-    } else {
-        Ok(stdout)
-    }
+    if !stdout.ends_with('\n') { Ok(format!("{stdout}\n")) } else { Ok(stdout) }
 }
 
 fn ensure_file_contents(path: &Path, contents: &str, check: bool) -> Result<()> {

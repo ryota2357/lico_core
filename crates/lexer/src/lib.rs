@@ -327,11 +327,7 @@ fn ident(cursor: &mut Cursor, first_char: char) -> TokenKind {
             let Some(c) = cursor.peek() else {
                 return pre_match;
             };
-            if is_ident_continue_char(c) {
-                None
-            } else {
-                pre_match
-            }
+            if is_ident_continue_char(c) { None } else { pre_match }
         } else {
             None
         }

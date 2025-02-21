@@ -1,8 +1,8 @@
 use rowan::GreenNodeBuilder;
 use std::borrow::Cow;
 use syntax::{
+    GreenNode, SyntaxError, SyntaxKind, T, TextRange,
     token::{QuoteKind, TokenKind, TokenStream},
-    GreenNode, SyntaxError, SyntaxKind, TextRange, T,
 };
 
 pub(crate) struct TreeBuilder<'s> {

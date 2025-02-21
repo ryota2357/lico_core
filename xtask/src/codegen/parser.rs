@@ -1,4 +1,4 @@
-use crate::{message, project_root, Level};
+use crate::{Level, message, project_root};
 use anyhow::Result;
 use ignore::Walk;
 use quote::{format_ident, quote};

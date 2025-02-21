@@ -1,7 +1,7 @@
 use std::fmt::Write;
 use syntax::{
-    ast::{AstNode, SourceFile},
     SyntaxNode,
+    ast::{AstNode, SourceFile},
 };
 
 pub fn make_snapshot(name: &str, source: &str) -> String {

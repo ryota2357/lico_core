@@ -1,4 +1,4 @@
-use crate::{parser::*, TokenSet};
+use crate::{TokenSet, parser::*};
 use syntax::{SyntaxKind, SyntaxKind::*, T};
 
 mod expression;

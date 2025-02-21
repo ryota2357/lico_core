@@ -1,7 +1,7 @@
 use syntax::{
-    ast,
+    SyntaxError, SyntaxNode, ast,
     ast::{AstChildren, AstNode},
-    hir, SyntaxError, SyntaxNode,
+    hir,
 };
 
 mod context;
