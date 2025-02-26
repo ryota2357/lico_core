@@ -5,3 +5,9 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
+lean_string = { workspace = true }
+foldhash = { workspace = true }
+hashbrown = { workspace = true, features = ["inline-more", "equivalent"] }
+
+[dev-dependencies]
+dhat = "0.3.3"

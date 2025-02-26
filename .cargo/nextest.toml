@@ -2,5 +2,5 @@
 dhat_serial = { max-threads = 1 }
 
 [[profile.default.overrides]]
-filter = 'package(runtime)'
+filter = ' binary_id(runtime::object_gc)'
 test-group = 'dhat_serial'

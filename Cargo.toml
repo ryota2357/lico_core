@@ -11,6 +11,8 @@ authors = ["ryota2357"]
 edition = "2024"
 
 [workspace.dependencies]
+foldhash = "0.1.4"
+hashbrown = { version = "0.15.2", default-features = false }
 indexed_arena = "0.2.1"
 lean_string = "0.4.0"
 rowan = "0.16.1"
