@@ -1,7 +1,5 @@
-use crate::{
-    codegen::{ensure_file_contents, rustfmt},
-    project_root,
-};
+use super::{ensure_file_contents, rustfmt};
+use crate::project_root;
 use anyhow::Result;
 use convert_case::{Case, Casing};
 use proc_macro2::{Ident, Punct, Spacing, TokenStream};

@@ -1,3 +1,4 @@
+use super::{ensure_file_contents, rustfmt};
 use crate::{Level, message, project_root};
 use anyhow::Result;
 use ignore::Walk;
@@ -8,8 +9,6 @@ use std::{
     path::{Path, PathBuf},
 };
 use xshell::Shell;
-
-use super::{ensure_file_contents, rustfmt};
 
 pub(crate) fn generate(sh: &Shell, check: bool) -> Result<()> {
     let src_path = project_root().join("crates/parser/src");
