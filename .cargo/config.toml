@@ -1,3 +1,4 @@
 [alias]
 xtask = "run --package xtask --"
 codegen = "run --package xtask --bin xtask -- codegen"
+xtest = "run --package xtask --bin xtask -- test"

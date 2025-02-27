@@ -1,0 +1,6 @@
+[test-groups]
+dhat_serial = { max-threads = 1 }
+
+[[profile.default.overrides]]
+filter = 'package(runtime)'
+test-group = 'dhat_serial'

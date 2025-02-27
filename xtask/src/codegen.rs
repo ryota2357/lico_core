@@ -8,6 +8,7 @@ use xshell::{Shell, cmd};
 
 impl flags::Codegen {
     pub(crate) fn run(self, sh: &Shell) -> Result<()> {
+        sh.change_dir(project_root());
         let kind = self.kind.unwrap_or_default();
         let check = self.check;
         match kind {
