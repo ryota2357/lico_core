@@ -1,5 +1,5 @@
 ---
-source: crates/parser/tests/inline.rs
+source: crates/parser/tests/inline_ok.rs
 ---
 # expr_literals
 

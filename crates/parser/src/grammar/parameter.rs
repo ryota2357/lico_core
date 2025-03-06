@@ -1,6 +1,6 @@
 use super::*;
 
-// :test param_list
+// :test ok param_list
 // func f(a) end
 // func f(a, b) end
 // func f(a, b,) end

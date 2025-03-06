@@ -29,7 +29,7 @@ pub(super) fn atom_expr(p: &mut Parser) -> CompletedMarker {
 
 const LITERA_FIRST: TokenSet = TokenSet::new(&[INT, FLOAT, STRING, T![true], T![false], T![nil]]);
 
-// :test expr_literals
+// :test ok expr_literals
 // var _ = 1
 // var _ = 2.3
 // var _ = "foo"
@@ -44,7 +44,7 @@ fn literal(p: &mut Parser) -> CompletedMarker {
     m.complete(p, LITERAL)
 }
 
-// :test local
+// :test ok local
 // var _ = foo_bar
 fn local(p: &mut Parser) -> CompletedMarker {
     let m = p.start();

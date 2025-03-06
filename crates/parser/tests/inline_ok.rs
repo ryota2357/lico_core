@@ -2,71 +2,71 @@
 #![cfg_attr(rustfmt, rustfmt::skip)]
 
 mod utils;
-const GROUP: &str = "inline";
+const GROUP: &str = "inline/ok";
 
 #[test]
 fn expr_literals() {
-    let source = include_str!("../test_data/inline/expr_literals.lico");
+    let source = include_str!("../test_data/inline/ok/expr_literals.lico");
     let snapshot = utils::make_snapshot("expr_literals", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn local() {
-    let source = include_str!("../test_data/inline/local.lico");
+    let source = include_str!("../test_data/inline/ok/local.lico");
     let snapshot = utils::make_snapshot("local", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn param_list() {
-    let source = include_str!("../test_data/inline/param_list.lico");
+    let source = include_str!("../test_data/inline/ok/param_list.lico");
     let snapshot = utils::make_snapshot("param_list", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn attr_stmt() {
-    let source = include_str!("../test_data/inline/attr_stmt.lico");
+    let source = include_str!("../test_data/inline/ok/attr_stmt.lico");
     let snapshot = utils::make_snapshot("attr_stmt", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn break_stmt() {
-    let source = include_str!("../test_data/inline/break_stmt.lico");
+    let source = include_str!("../test_data/inline/ok/break_stmt.lico");
     let snapshot = utils::make_snapshot("break_stmt", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn continue_stmt() {
-    let source = include_str!("../test_data/inline/continue_stmt.lico");
+    let source = include_str!("../test_data/inline/ok/continue_stmt.lico");
     let snapshot = utils::make_snapshot("continue_stmt", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn for_stmt() {
-    let source = include_str!("../test_data/inline/for_stmt.lico");
+    let source = include_str!("../test_data/inline/ok/for_stmt.lico");
     let snapshot = utils::make_snapshot("for_stmt", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn func() {
-    let source = include_str!("../test_data/inline/func.lico");
+    let source = include_str!("../test_data/inline/ok/func.lico");
     let snapshot = utils::make_snapshot("func", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn return_stmt() {
-    let source = include_str!("../test_data/inline/return_stmt.lico");
+    let source = include_str!("../test_data/inline/ok/return_stmt.lico");
     let snapshot = utils::make_snapshot("return_stmt", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn var_stmt() {
-    let source = include_str!("../test_data/inline/var_stmt.lico");
+    let source = include_str!("../test_data/inline/ok/var_stmt.lico");
     let snapshot = utils::make_snapshot("var_stmt", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
 fn while_stmt() {
-    let source = include_str!("../test_data/inline/while_stmt.lico");
+    let source = include_str!("../test_data/inline/ok/while_stmt.lico");
     let snapshot = utils::make_snapshot("while_stmt", source);
     utils::assert_snapshot!(GROUP, snapshot);
 }
