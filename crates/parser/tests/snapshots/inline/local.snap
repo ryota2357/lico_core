@@ -22,7 +22,8 @@ SOURCE_FILE@0..15
     EQ@6..7 "="
     WHITESPACE@7..8 " "
     LOCAL@8..15
-      IDENT@8..15 "foo_bar"
+      NAME@8..15
+        IDENT@8..15 "foo_bar"
 ```
 
 ## AST
@@ -38,7 +39,9 @@ SourceFile {
             },
             eq_token: EQ@6..7 "=",
             expr: Local {
-                name: none,
+                name: Name {
+                    ident: IDENT@8..15 "foo_bar",
+                },
             },
         },
     ],

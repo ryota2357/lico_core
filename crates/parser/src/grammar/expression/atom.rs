@@ -1,7 +1,7 @@
 use super::*;
 
 pub(super) const ATOM_EXPR_FIRST: TokenSet = LITERA_FIRST.union(TokenSet::new(&[
-    IDENT,    // func_expr
+    IDENT,    // local
     T!['('],  // paren_expr
     T!['['],  // array_expr
     T!['{'],  // table_expr
@@ -48,7 +48,7 @@ fn literal(p: &mut Parser) -> CompletedMarker {
 // var _ = foo_bar
 fn local(p: &mut Parser) -> CompletedMarker {
     let m = p.start();
-    p.bump(IDENT);
+    name(p);
     m.complete(p, LOCAL)
 }
 
