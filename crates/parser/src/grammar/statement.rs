@@ -74,6 +74,9 @@ fn continue_stmt(p: &mut Parser) {
     m.complete(p, CONTINUE_STMT);
 }
 
+// :test for_stmt
+// for i in a do end
+// for x in [1, 2, 3] do break end
 fn for_stmt(p: &mut Parser) {
     let m = p.start();
 
@@ -92,7 +95,20 @@ fn for_stmt(p: &mut Parser) {
     }
     p.eat_trivia();
 
-    expression::do_expr(p);
+    if !p.at(T![do]) && p.at_ts(expression::EXPR_FIRST) {
+        expression::expr(p);
+        p.eat_trivia();
+    } else if p.at(T![do]) {
+        p.error("Missing <expr>");
+    } else {
+        p.error("Expected <expr> for iterable");
+    }
+
+    if p.at(T![do]) {
+        expression::do_expr(p);
+    } else {
+        p.error("Expected `do` ~ `end` block");
+    }
 
     m.complete(p, FOR_STMT);
 }

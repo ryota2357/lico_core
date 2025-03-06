@@ -1,0 +1,123 @@
+---
+source: crates/parser/tests/inline.rs
+---
+# for_stmt
+
+## Input
+
+```
+for i in a do end
+for x in [1, 2, 3] do break end
+```
+
+## CST
+
+```
+SOURCE_FILE@0..49
+  FOR_STMT@0..17
+    FOR_KW@0..3 "for"
+    WHITESPACE@3..4 " "
+    NAME@4..5
+      IDENT@4..5 "i"
+    WHITESPACE@5..6 " "
+    IN_KW@6..8 "in"
+    WHITESPACE@8..9 " "
+    LOCAL@9..10
+      NAME@9..10
+        IDENT@9..10 "a"
+    WHITESPACE@10..11 " "
+    DO_EXPR@11..17
+      DO_KW@11..13 "do"
+      WHITESPACE@13..14 " "
+      END_KW@14..17 "end"
+  WHITESPACE@17..18 "\n"
+  FOR_STMT@18..49
+    FOR_KW@18..21 "for"
+    WHITESPACE@21..22 " "
+    NAME@22..23
+      IDENT@22..23 "x"
+    WHITESPACE@23..24 " "
+    IN_KW@24..26 "in"
+    WHITESPACE@26..27 " "
+    ARRAY_EXPR@27..36
+      OPEN_BRACKET@27..28 "["
+      LITERAL@28..29
+        INT@28..29 "1"
+      COMMA@29..30 ","
+      WHITESPACE@30..31 " "
+      LITERAL@31..32
+        INT@31..32 "2"
+      COMMA@32..33 ","
+      WHITESPACE@33..34 " "
+      LITERAL@34..35
+        INT@34..35 "3"
+      CLOSE_BRACKET@35..36 "]"
+    WHITESPACE@36..37 " "
+    DO_EXPR@37..49
+      DO_KW@37..39 "do"
+      WHITESPACE@39..40 " "
+      BREAK_STMT@40..45
+        BREAK_KW@40..45 "break"
+      WHITESPACE@45..46 " "
+      END_KW@46..49 "end"
+```
+
+## AST
+
+```
+SourceFile {
+    shebang: none,
+    statements: [
+        ForStmt {
+            for_token: FOR_KW@0..3 "for",
+            pat: Name {
+                ident: IDENT@4..5 "i",
+            },
+            in_token: IN_KW@6..8 "in",
+            iterable: Local {
+                name: Name {
+                    ident: IDENT@9..10 "a",
+                },
+            },
+            loop_body: DoExpr {
+                do_token: DO_KW@11..13 "do",
+                statements: [],
+                end_token: END_KW@14..17 "end",
+            },
+        },
+        ForStmt {
+            for_token: FOR_KW@18..21 "for",
+            pat: Name {
+                ident: IDENT@22..23 "x",
+            },
+            in_token: IN_KW@24..26 "in",
+            iterable: ArrayExpr {
+                open_bracket_token: OPEN_BRACKET@27..28 "[",
+                elements: [
+                    Literal {
+                        token: INT@28..29 "1",
+                    },
+                    Literal {
+                        token: INT@31..32 "2",
+                    },
+                    Literal {
+                        token: INT@34..35 "3",
+                    },
+                ],
+                close_bracket_token: CLOSE_BRACKET@35..36 "]",
+            },
+            loop_body: DoExpr {
+                do_token: DO_KW@37..39 "do",
+                statements: [
+                    BreakStmt {
+                        break_token: BREAK_KW@40..45 "break",
+                    },
+                ],
+                end_token: END_KW@46..49 "end",
+            },
+        },
+    ],
+}
+```
+
+vim:ft=markdown

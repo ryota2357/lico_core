@@ -41,6 +41,12 @@ fn continue_stmt() {
     utils::assert_snapshot!(GROUP, snapshot);
 }
 #[test]
+fn for_stmt() {
+    let source = include_str!("../test_data/inline/for_stmt.lico");
+    let snapshot = utils::make_snapshot("for_stmt", source);
+    utils::assert_snapshot!(GROUP, snapshot);
+}
+#[test]
 fn func() {
     let source = include_str!("../test_data/inline/func.lico");
     let snapshot = utils::make_snapshot("func", source);
