@@ -1,5 +1,5 @@
 use syntax::{
-    SyntaxError, SyntaxNode, ast,
+    SyntaxError, SyntaxNode, TextRange, ast,
     ast::{AstChildren, AstNode},
     hir,
 };

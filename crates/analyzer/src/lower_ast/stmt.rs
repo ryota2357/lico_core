@@ -30,6 +30,14 @@ fn attr(ctx: &mut Context, node: &ast::AttrStmt) -> hir::StmtKind {
 fn break_(ctx: &mut Context, node: &ast::BreakStmt) -> hir::StmtKind {
     if !ctx.loops.is_in_loop() {
         ctx.errors.push(SyntaxError::new("'break' outside of loop", node.syntax().text_range()));
+    } else if let Some(mut sibling) = node.syntax().next_sibling() {
+        let start = sibling.text_range().start();
+        while let Some(next) = sibling.next_sibling() {
+            sibling = next;
+        }
+        let end = sibling.text_range().end();
+        let range = TextRange::new(start, end);
+        ctx.errors.push(SyntaxError::new("Unreachable code after 'break'", range));
     }
     hir::StmtKind::BreakLoop
 }
@@ -37,6 +45,14 @@ fn break_(ctx: &mut Context, node: &ast::BreakStmt) -> hir::StmtKind {
 fn continue_(ctx: &mut Context, node: &ast::ContinueStmt) -> hir::StmtKind {
     if !ctx.loops.is_in_loop() {
         ctx.errors.push(SyntaxError::new("'continue' outside of loop", node.syntax().text_range()));
+    } else if let Some(mut sibling) = node.syntax().next_sibling() {
+        let start = sibling.text_range().start();
+        while let Some(next) = sibling.next_sibling() {
+            sibling = next;
+        }
+        let end = sibling.text_range().end();
+        let range = TextRange::new(start, end);
+        ctx.errors.push(SyntaxError::new("Unreachable code after 'continue'", range));
     }
     hir::StmtKind::ContinueLoop
 }
@@ -102,6 +118,15 @@ fn func(ctx: &mut Context, node: &ast::FuncStmt) -> hir::StmtKind {
 }
 
 fn return_(ctx: &mut Context, node: &ast::ReturnStmt) -> hir::StmtKind {
+    while let Some(mut sibling) = node.syntax().next_sibling() {
+        let start = sibling.text_range().start();
+        while let Some(next) = sibling.next_sibling() {
+            sibling = next;
+        }
+        let end = sibling.text_range().end();
+        let range = TextRange::new(start, end);
+        ctx.errors.push(SyntaxError::new("Unreachable code after 'return'", range));
+    }
     hir::StmtKind::Return {
         expr: node.expr().map(|e| {
             let kind = expr(ctx, &e);
