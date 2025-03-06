@@ -19,6 +19,8 @@ impl Context {
 }
 
 mod loops {
+    use core::mem::forget;
+
     pub(crate) struct LoopCounter {
         count: u32,
     }
@@ -48,6 +50,7 @@ mod loops {
         pub(crate) fn finish(self, counter: &mut LoopCounter) {
             // Never underflow because the `LoopMarker` is constructed by `start` method.
             counter.count -= 1;
+            forget(self)
         }
     }
 
