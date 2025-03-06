@@ -45,3 +45,14 @@ macro_rules! impl_num_convert {
 impl_num_convert!(N = 8 : i64, u64, f64);
 impl_num_convert!(N = 4 : i32, u32, f32);
 impl_num_convert!(N = 2 : i16, u16);
+impl_num_convert!(N = 1 : i8, u8);
+impl Operand<1> {
+    pub fn as_bool(&self) -> bool {
+        self.0 != [0]
+    }
+}
+impl From<bool> for Operand<1> {
+    fn from(value: bool) -> Self {
+        Operand(if value { [1] } else { [0] })
+    }
+}
