@@ -3,7 +3,7 @@ use super::*;
 pub(super) struct Context {
     pub(super) storage: hir::Storage,
     pub(super) bindings: BindingTable,
-    pub(super) loops: loops::LoopCounter,
+    pub(super) loops: LoopCounter,
     pub(super) errors: Vec<SyntaxError>,
 }
 
@@ -12,12 +12,13 @@ impl Context {
         Context {
             storage: hir::Storage::new(),
             bindings: BindingTable::new(),
-            loops: loops::LoopCounter::new(),
+            loops: LoopCounter::new(),
             errors: Vec::new(),
         }
     }
 }
 
+pub(super) use loops::*;
 mod loops {
     use core::mem::forget;
 
