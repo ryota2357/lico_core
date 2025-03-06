@@ -16,8 +16,10 @@ use stmt::{stmt, stmts};
 mod utils;
 use utils::*;
 
-pub fn lower_ast(source_file: ast::SourceFile) -> hir::Module {
+pub fn lower_ast(source_file: ast::SourceFile) -> (hir::Module, Vec<SyntaxError>) {
     let mut ctx = Context::new();
     let stmts = stmts(&mut ctx, source_file.statements());
-    hir::Module { top_level: ctx.storage.add_stmts(stmts), storage: ctx.storage }
+    let module = hir::Module { top_level: ctx.storage.add_stmts(stmts), storage: ctx.storage };
+    let error = ctx.errors;
+    (module, error)
 }
