@@ -47,43 +47,29 @@ fn for_(ctx: &mut Context, node: &ast::ForStmt) -> hir::StmtKind {
         ctx.storage.add_expr(kind, e.syntax().clone())
     });
     let binding_scope = ctx.bindings.start_scope();
-    let loop_scope = ctx.loops.start();
-    match node.pat() {
-        Some(ast::Pat::Name(name)) => {
-            let Some(loop_var) = name.ident() else {
-                unexpected_ast!("For loop variable has no ident")
-            };
-            hir::StmtKind::ForLoop {
-                variable: Some(hir::Symbol::new(
-                    ctx.bindings.add(loop_var.text().into()),
-                    loop_var,
-                )),
-                iterable,
-                body: match node.loop_body() {
-                    Some(body) => {
-                        let kinds = stmts(ctx, body.statements());
-                        loop_scope.finish(&mut ctx.loops);
-                        binding_scope.finish(&mut ctx.bindings);
-                        ctx.storage.add_stmts(kinds)
-                    }
-                    None => ctx.storage.add_stmts([]),
-                },
+    let ret_kind = hir::StmtKind::ForLoop {
+        variable: match node.pat() {
+            Some(ast::Pat::Name(name)) => {
+                let Some(loop_var) = name.ident() else {
+                    unexpected_ast!("For loop variable has no ident")
+                };
+                Some(hir::Symbol::new(ctx.bindings.add(loop_var.text().into()), loop_var))
             }
-        }
-        Some(ast::Pat::Wildcard(_)) | None => hir::StmtKind::ForLoop {
-            variable: None,
-            iterable,
-            body: match node.loop_body() {
-                Some(body) => {
-                    let kinds = stmts(ctx, body.statements());
-                    loop_scope.finish(&mut ctx.loops);
-                    binding_scope.finish(&mut ctx.bindings);
-                    ctx.storage.add_stmts(kinds)
-                }
-                None => ctx.storage.add_stmts([]),
-            },
+            Some(ast::Pat::Wildcard(_)) | None => None,
         },
-    }
+        iterable,
+        body: match node.loop_body() {
+            Some(body) => {
+                let loop_scope = ctx.loops.start();
+                let kinds = stmts(ctx, body.statements());
+                loop_scope.finish(&mut ctx.loops);
+                ctx.storage.add_stmts(kinds)
+            }
+            None => ctx.storage.add_stmts([]),
+        },
+    };
+    binding_scope.finish(&mut ctx.bindings);
+    ret_kind
 }
 
 fn func(ctx: &mut Context, node: &ast::FuncStmt) -> hir::StmtKind {
