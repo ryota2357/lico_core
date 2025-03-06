@@ -15,10 +15,10 @@ pub use instr::Instr;
 // for reference counting, but also provides `code_mut` method which has internal mutability.
 // If we need to send to another thread, we may add another struct and methods.
 pub struct ExecUnit {
-    data_ptr: NonNull<LeanString>,
-    data_len: usize,
     code_ptr: NonNull<Instr>,
     code_len: usize,
+    data_ptr: NonNull<LeanString>,
+    data_len: usize,
     ref_count: RefCountPtr,
 }
 
