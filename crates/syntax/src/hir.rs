@@ -7,8 +7,33 @@ use indexed_arena::{Arena, Idx, IdxRange};
 use lean_string::LeanString;
 
 pub struct Module {
-    pub storage: Storage,
-    pub top_level: StmtsId,
+    entry: FuncId,
+    global: GlobalSymbolIds,
+    storage: Storage,
+}
+
+impl Module {
+    pub fn new(entry: FuncId, global: GlobalSymbolIds, storage: Storage) -> Self {
+        Self { entry, global, storage }
+    }
+
+    pub fn entry(&self) -> FuncId {
+        self.entry
+    }
+
+    pub fn storage(&self) -> &Storage {
+        &self.storage
+    }
+
+    pub fn global(&self) -> &GlobalSymbolIds {
+        &self.global
+    }
+}
+
+pub struct GlobalSymbolIds {
+    pub print: SymbolId,
+    pub println: SymbolId,
+    pub require: SymbolId,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
