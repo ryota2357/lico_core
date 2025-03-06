@@ -31,14 +31,17 @@ fn rustfmt(sh: &Shell, text: String) -> Result<String> {
     if !stdout.ends_with('\n') { Ok(format!("{stdout}\n")) } else { Ok(stdout) }
 }
 
+fn display_path(path: &Path) -> std::path::Display<'_> {
+    path.strip_prefix(project_root()).unwrap_or(path).display()
+}
+
 fn ensure_file_contents(path: &Path, contents: &str, check: bool) -> Result<()> {
-    let display_path = path.strip_prefix(project_root()).unwrap_or(path);
     if let Ok(old_contents) = fs::read_to_string(path) {
         if old_contents == contents {
-            message(Level::Info, format!("{} is up to date", display_path.display()));
+            message(Level::Info, format!("{} is up to date", display_path(path)));
             return Ok(());
         } else if check {
-            message(Level::Error, format!("{} is out of date", display_path.display()));
+            message(Level::Error, format!("{} is out of date", display_path(path)));
             return Err(anyhow!("failed to check generated file"));
         }
     }
@@ -46,7 +49,7 @@ fn ensure_file_contents(path: &Path, contents: &str, check: bool) -> Result<()> 
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    message(Level::Warn, format!("updating {}", display_path.display()));
+    message(Level::Warn, format!("updating {}", display_path(path)));
     fs::write(path, contents)?;
     Ok(())
 }
