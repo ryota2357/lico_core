@@ -6,6 +6,7 @@ use core::{
 use indexed_arena::{Arena, Idx, IdxRange};
 use lean_string::LeanString;
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct Module {
     entry: FuncId,
     global: GlobalSymbolIds,
@@ -30,6 +31,7 @@ impl Module {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct GlobalSymbolIds {
     pub print: SymbolId,
     pub println: SymbolId,
@@ -88,7 +90,7 @@ impl Expr {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ExprId(Idx<Expr, NonZero<u32>>);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -208,10 +210,10 @@ impl Func {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FuncId(Idx<Func, u32>);
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Storage {
     func_arena: Arena<Func, u32>,
     expr_arena: Arena<Expr, NonZero<u32>>,
