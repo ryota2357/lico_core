@@ -122,6 +122,10 @@ mod binding {
             let idx = *self.map.get(name)? as usize;
             Some(self.nodes[idx].id)
         }
+
+        pub(crate) fn symbol_count(&self) -> usize {
+            self.next_id.raw() as usize
+        }
     }
 
     #[must_use]

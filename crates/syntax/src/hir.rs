@@ -281,6 +281,18 @@ impl Storage {
     pub fn get_stmts(&self, id: StmtsId) -> &[Stmt] {
         &self.stmt_arena[id.0]
     }
+
+    pub fn func_count(&self) -> usize {
+        self.func_arena.len()
+    }
+
+    pub fn expr_count(&self) -> usize {
+        self.expr_arena.len()
+    }
+
+    pub fn stmt_count(&self) -> usize {
+        self.stmt_arena.len()
+    }
 }
 
 impl Default for Storage {
