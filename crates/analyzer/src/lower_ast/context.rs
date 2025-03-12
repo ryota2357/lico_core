@@ -72,6 +72,20 @@ mod binding {
     use std::borrow::Borrow;
     use syntax::hir::SymbolId;
 
+    // NOTE:
+    // A simple implementation of BindingTable is as follows:
+    //
+    // pub struct BindingTable {
+    //    scopes: Vec<HashMap<String, SymbolId>>,
+    //    next_id: SymbolId,
+    // }
+    //
+    // Where `scopes` is a stack of scopes, and `next_id` is the next symbol id.
+    // When we add a new symbol, we add it to the top scope.
+    // When we resolve a symbol, we iterate scopes from top to bottom.
+    //
+    // The following implementation is more efficient than the above implementation.
+
     struct Node {
         id: SymbolId,
         name: LeanString,
