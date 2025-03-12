@@ -93,6 +93,12 @@ impl Expr {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ExprId(Idx<Expr, NonZero<u32>>);
 
+impl ExprId {
+    pub fn raw(&self) -> u32 {
+        self.0.into_raw().get()
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct ExprIdRange(IdxRange<Expr, NonZero<u32>>);
 
@@ -212,6 +218,12 @@ impl Func {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FuncId(Idx<Func, u32>);
+
+impl FuncId {
+    pub fn raw(&self) -> u32 {
+        self.0.into_raw()
+    }
+}
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Storage {
