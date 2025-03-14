@@ -100,7 +100,7 @@ impl ExprId {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct ExprIdRange(IdxRange<Expr, NonZero<u32>>);
+pub struct ExprsId(IdxRange<Expr, NonZero<u32>>);
 
 type OptExprId = Option<ExprId>;
 
@@ -113,14 +113,14 @@ pub enum ExprKind {
     Bool { value: bool },
     Nil,
     Function(FuncId),
-    Array { elements: ExprIdRange },
+    Array { elements: ExprsId },
     Table { fields: Box<[(OptExprId, OptExprId)]> },
     Branch { clauses: Box<[(OptExprId, StmtsId, OptExprId)]> },
     Prefix { op: PrefixOp, expr: OptExprId },
     Binary { op: BinaryOp, lhs: OptExprId, rhs: OptExprId },
     Block { init: StmtsId, last: OptExprId },
-    Call { expr: OptExprId, args: ExprIdRange },
-    MethodCall { receiver: OptExprId, name: Symbol, args: ExprIdRange },
+    Call { expr: OptExprId, args: ExprsId },
+    MethodCall { receiver: OptExprId, name: Symbol, args: ExprsId },
     Field { expr: OptExprId, field: OptExprId },
     UnkownLocal,
     InvalidInt,
@@ -192,8 +192,8 @@ pub enum StmtKind {
     ForLoop { variable: Option<Symbol>, iterable: OptExprId, body: StmtsId },
     WhileLoop { condition: OptExprId, body: StmtsId },
     Block { stmts: StmtsId },
-    Call { expr: OptExprId, args: ExprIdRange },
-    MethodCall { receiver: OptExprId, name: Symbol, args: ExprIdRange },
+    Call { expr: OptExprId, args: ExprsId },
+    MethodCall { receiver: OptExprId, name: Symbol, args: ExprsId },
     Return { expr: OptExprId },
     BreakLoop,
     ContinueLoop,
@@ -253,12 +253,12 @@ impl Storage {
         ExprId(self.expr_arena.alloc(Expr { kind, node }))
     }
 
-    pub fn add_exprs<I>(&mut self, exprs: I) -> ExprIdRange
+    pub fn add_exprs<I>(&mut self, exprs: I) -> ExprsId
     where
         I: IntoIterator<Item = (ExprKind, SyntaxNode)>,
     {
         let exprs = exprs.into_iter().map(|(kind, node)| Expr { kind, node });
-        ExprIdRange(self.expr_arena.alloc_many(exprs))
+        ExprsId(self.expr_arena.alloc_many(exprs))
     }
 
     pub fn add_stmts<I>(&mut self, stmts: I) -> StmtsId
@@ -277,7 +277,7 @@ impl Storage {
         &self.expr_arena[id.0]
     }
 
-    pub fn get_exprs(&self, id: ExprIdRange) -> &[Expr] {
+    pub fn get_exprs(&self, id: ExprsId) -> &[Expr] {
         &self.expr_arena[id.0]
     }
 
