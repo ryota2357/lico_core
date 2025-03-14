@@ -176,6 +176,9 @@ impl Stmt {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct StmtId(Idx<Stmt, u32>);
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct StmtsId(IdxRange<Stmt, u32>);
 
@@ -276,6 +279,10 @@ impl Storage {
 
     pub fn get_exprs(&self, id: ExprIdRange) -> &[Expr] {
         &self.expr_arena[id.0]
+    }
+
+    pub fn get_stmt(&self, id: StmtId) -> &Stmt {
+        &self.stmt_arena[id.0]
     }
 
     pub fn get_stmts(&self, id: StmtsId) -> &[Stmt] {
