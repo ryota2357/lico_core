@@ -331,3 +331,25 @@ impl Default for Storage {
         Self::new()
     }
 }
+
+pub trait HirMap<S, E, F>
+where
+    S: SymbolInfo,
+    E: ExprInfo,
+    F: FuncInfo,
+{
+    fn symbol(&self, id: SymbolId) -> &S;
+    fn symbol_mut(&mut self, id: SymbolId) -> &mut S;
+
+    fn expr(&self, id: ExprId) -> &E;
+    fn expr_mut(&mut self, id: ExprId) -> &mut E;
+
+    fn func(&self, id: FuncId) -> &F;
+    fn func_mut(&mut self, id: FuncId) -> &mut F;
+}
+
+pub trait SymbolInfo: Clone + Default {}
+
+pub trait ExprInfo: Clone + Default {}
+
+pub trait FuncInfo: Clone + Default {}
