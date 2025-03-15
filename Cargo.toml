@@ -11,13 +11,13 @@ authors = ["ryota2357"]
 edition = "2024"
 
 [workspace.dependencies]
-foldhash = "0.1.4"
+foldhash = "0.1.5"
 hashbrown = { version = "0.15.2", default-features = false }
 indexed_arena = "0.3.0"
 lean_string = "0.4.0"
 rowan = "0.16.1"
 rustc-hash = "2.1.1"
-unicode-ident = "1.0.17"
+unicode-ident = "1.0.18"
 unicode-properties = { version = "0.1.3", default-features = false }
 
 [package]
