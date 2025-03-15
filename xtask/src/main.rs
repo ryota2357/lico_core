@@ -1,5 +1,3 @@
-#![feature(closure_lifetime_binder)]
-
 mod flags;
 
 mod utils;
