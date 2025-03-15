@@ -305,24 +305,24 @@ impl Storage {
         self.func_arena.values()
     }
 
-    pub fn iter_func_with_id(&self) -> impl Iterator<Item = (FuncId, &Func)> {
-        self.func_arena.iter().map(|(id, func)| (FuncId(id), func))
+    pub fn iter_func_with_id(&self) -> impl Iterator<Item = (&Func, FuncId)> {
+        self.func_arena.iter().map(|(id, func)| (func, FuncId(id)))
     }
 
     pub fn iter_expr(&self) -> impl Iterator<Item = &Expr> {
         self.expr_arena.values()
     }
 
-    pub fn iter_expr_with_id(&self) -> impl Iterator<Item = (ExprId, &Expr)> {
-        self.expr_arena.iter().map(|(id, expr)| (ExprId(id), expr))
+    pub fn iter_expr_with_id(&self) -> impl Iterator<Item = (&Expr, ExprId)> {
+        self.expr_arena.iter().map(|(id, expr)| (expr, ExprId(id)))
     }
 
     pub fn iter_stmt(&self) -> impl Iterator<Item = &Stmt> {
         self.stmt_arena.values()
     }
 
-    pub fn iter_stmt_with_id(&self) -> impl Iterator<Item = (StmtId, &Stmt)> {
-        self.stmt_arena.iter().map(|(id, stmt)| (StmtId(id), stmt))
+    pub fn iter_stmt_with_id(&self) -> impl Iterator<Item = (&Stmt, StmtId)> {
+        self.stmt_arena.iter().map(|(id, stmt)| (stmt, StmtId(id)))
     }
 }
 
