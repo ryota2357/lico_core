@@ -3,7 +3,7 @@ use core::{
     hash::{Hash, Hasher},
     num::NonZero,
 };
-use indexed_arena::{Arena, Idx, IdxRange};
+use indexed_arena::{Arena, Idx, IdxSpan};
 use lean_string::LeanString;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -100,7 +100,7 @@ impl ExprId {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct ExprsId(IdxRange<Expr, NonZero<u32>>);
+pub struct ExprsId(IdxSpan<Expr, NonZero<u32>>);
 
 type OptExprId = Option<ExprId>;
 
@@ -180,7 +180,7 @@ impl Stmt {
 pub struct StmtId(Idx<Stmt, u32>);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct StmtsId(IdxRange<Stmt, u32>);
+pub struct StmtsId(IdxSpan<Stmt, u32>);
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum StmtKind {
