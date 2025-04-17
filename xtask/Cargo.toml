@@ -5,11 +5,11 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
-anyhow = "1.0.97"
+anyhow = "1.0.98"
 colored = "3.0.0"
 convert_case = "0.8.0"
 ignore = "0.4.23"
-proc-macro2 = "1.0.94"
+proc-macro2 = "1.0.95"
 quote = "1.0.40"
 ungrammar = "1.16.1"
 xflags = "0.3.2"
